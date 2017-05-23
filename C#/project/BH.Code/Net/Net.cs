@@ -134,6 +134,8 @@ namespace BH.Code
         /// <returns></returns>
         public static string GetLocation(string ip)
         {
+            if (ip == "127.0.0.1")
+                return "本地地址";
             string res = "";
             try
             {

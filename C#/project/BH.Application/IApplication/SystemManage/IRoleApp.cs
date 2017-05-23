@@ -3,11 +3,11 @@ using BH.Domain.Entity.SystemManage;
 
 namespace BH.IApplication
 {
-    public interface IDutyApp
+    public interface IRoleApp
     {
         void DeleteForm(string keyValue);
         RoleEntity GetForm(string keyValue);
         List<RoleEntity> GetList(string keyword = "");
-        void SubmitForm(RoleEntity roleEntity, string keyValue);
+        void SubmitForm(RoleEntity roleEntity, string[] permissionIds, string keyValue);
     }
 }

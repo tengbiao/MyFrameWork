@@ -7,19 +7,25 @@
 using BH.Domain.Entity.SystemSecurity;
 using BH.Application.SystemSecurity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using BH.Domain.Entity.SystemManage;
 using BH.Application.SystemManage;
 using BH.Code;
+using BH.IApplication;
 using BH.Application;
 
 namespace BH.Web.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly ILogApp _logApp;
+        private readonly IUserApp _userApp;
+        public LoginController(ILogApp logApp, IUserApp userApp)
+        {
+            _logApp = logApp;
+            _userApp = userApp;
+        }
+
         [HttpGet]
         public virtual ActionResult Index()
         {
@@ -34,7 +40,7 @@ namespace BH.Web.Controllers
         [HttpGet]
         public ActionResult OutLogin()
         {
-            new LogApp().WriteDbLog(new LogEntity
+            _logApp.WriteDbLog(new LogEntity
             {
                 F_ModuleName = "系统登录",
                 F_Type = DbLogType.Exit.ToString(),
@@ -62,7 +68,7 @@ namespace BH.Web.Controllers
                     throw new Exception("验证码错误，请重新输入");
                 }
 
-                UserEntity userEntity = new UserApp().CheckLogin(username, password);
+                UserEntity userEntity = _userApp.CheckLogin(username, password);
                 if (userEntity != null)
                 {
                     OperatorModel operatorModel = new OperatorModel();
@@ -89,7 +95,7 @@ namespace BH.Web.Controllers
                     logEntity.F_NickName = userEntity.F_RealName;
                     logEntity.F_Result = true;
                     logEntity.F_Description = "登录成功";
-                    new LogApp().WriteDbLog(logEntity);
+                    _logApp.WriteDbLog(logEntity);
                 }
                 return Content(new AjaxResult { state = ResultType.success.ToString(), message = "登录成功。" }.ToJson());
             }
@@ -99,7 +105,7 @@ namespace BH.Web.Controllers
                 logEntity.F_NickName = username;
                 logEntity.F_Result = false;
                 logEntity.F_Description = "登录失败，" + ex.Message;
-                new LogApp().WriteDbLog(logEntity);
+                _logApp.WriteDbLog(logEntity);
                 return Content(new AjaxResult { state = ResultType.error.ToString(), message = ex.Message }.ToJson());
             }
         }

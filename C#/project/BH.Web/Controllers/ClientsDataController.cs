@@ -7,6 +7,7 @@
 using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,28 @@ namespace BH.Web.Controllers
     [HandlerLogin]
     public class ClientsDataController : Controller
     {
+        private readonly IItemsApp _itemsApp;
+        private readonly IItemsDetailApp _itemsDetailApp;
+        private readonly IOrganizeApp _organizeApp;
+        private readonly IRoleApp _roleApp;
+        private readonly IRoleAuthorizeApp _roleAuthorizeApp;
+        private readonly IDutyApp _dutyApp;
+
+        public ClientsDataController(IItemsApp itemsApp,
+            IItemsDetailApp itemsDetailApp, 
+            IOrganizeApp organizeApp, 
+            IRoleApp roleApp, 
+            IRoleAuthorizeApp roleAuthorizeApp,
+            IDutyApp dutyApp)
+        {
+            _itemsApp = itemsApp;
+            _itemsDetailApp = itemsDetailApp;
+            _organizeApp = organizeApp;
+            _roleApp = roleApp;
+            _roleAuthorizeApp = roleAuthorizeApp;
+            _dutyApp = dutyApp;
+        }
+
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetClientsDataJson()
@@ -35,9 +58,9 @@ namespace BH.Web.Controllers
         }
         private object GetDataItemList()
         {
-            var itemdata = new ItemsDetailApp().GetList();
+            var itemdata = _itemsDetailApp.GetList();
             Dictionary<string, object> dictionaryItem = new Dictionary<string, object>();
-            foreach (var item in new ItemsApp().GetList())
+            foreach (var item in _itemsApp.GetList())
             {
                 var dataItemList = itemdata.FindAll(t => t.F_ItemId.Equals(item.F_Id));
                 Dictionary<string, string> dictionaryItemList = new Dictionary<string, string>();
@@ -51,8 +74,7 @@ namespace BH.Web.Controllers
         }
         private object GetOrganizeList()
         {
-            OrganizeApp organizeApp = new OrganizeApp();
-            var data = organizeApp.GetList();
+            var data = _organizeApp.GetList();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             foreach (OrganizeEntity item in data)
             {
@@ -67,8 +89,7 @@ namespace BH.Web.Controllers
         }
         private object GetRoleList()
         {
-            RoleApp roleApp = new RoleApp();
-            var data = roleApp.GetList();
+            var data = _roleApp.GetList();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             foreach (RoleEntity item in data)
             {
@@ -83,8 +104,7 @@ namespace BH.Web.Controllers
         }
         private object GetDutyList()
         {
-            DutyApp dutyApp = new DutyApp();
-            var data = dutyApp.GetList();
+            var data = _dutyApp.GetList();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             foreach (RoleEntity item in data)
             {
@@ -100,7 +120,7 @@ namespace BH.Web.Controllers
         private object GetMenuList()
         {
             var roleId = OperatorProvider.Provider.GetCurrent().RoleId;
-            return ToMenuJson(new RoleAuthorizeApp().GetMenuList(roleId), "0");
+            return ToMenuJson(_roleAuthorizeApp.GetMenuList(roleId), "0");
         }
         private string ToMenuJson(List<ModuleEntity> data, string parentId)
         {
@@ -123,7 +143,7 @@ namespace BH.Web.Controllers
         private object GetMenuButtonList()
         {
             var roleId = OperatorProvider.Provider.GetCurrent().RoleId;
-            var data = new RoleAuthorizeApp().GetButtonList(roleId);
+            var data = _roleAuthorizeApp.GetButtonList(roleId);
             var dataModuleId = data.Distinct(new ExtList<ModuleButtonEntity>("F_ModuleId"));
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             foreach (ModuleButtonEntity item in dataModuleId)

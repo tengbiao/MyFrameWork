@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac.Core.Lifetime;
-using Autofac.Integration.Mvc;
+﻿using Autofac.Integration.Mvc;
 using Autofac;
 
-namespace BH.Code.Autofac1
+namespace BH.Code.Autofac
 {
     public class IocManage
     {

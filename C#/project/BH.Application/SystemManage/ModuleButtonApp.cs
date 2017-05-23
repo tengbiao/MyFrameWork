@@ -1,22 +1,20 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
+using BH.Data;
 using BH.Domain.Entity.SystemManage;
-using BH.Repository.IRepository.SystemManage;
-using BH.Repository.SystemManage;
+using BH.IApplication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Application.SystemManage
 {
-    public class ModuleButtonApp
+    public class ModuleButtonApp : IModuleButtonApp
     {
-        private IModuleButtonRepository service = new ModuleButtonRepository();
+        private readonly IRepository<ModuleButtonEntity> _repository;
+        public ModuleButtonApp(IRepository<ModuleButtonEntity> repository)
+        {
+            _repository = repository;
+        }
 
         public List<ModuleButtonEntity> GetList(string moduleId = "")
         {
@@ -25,21 +23,21 @@ namespace BH.Application.SystemManage
             {
                 expression = expression.And(t => t.F_ModuleId == moduleId);
             }
-            return service.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
         }
         public ModuleButtonEntity GetForm(string keyValue)
         {
-            return service.FindKey(keyValue);
+            return _repository.FindKey(keyValue);
         }
         public void DeleteForm(string keyValue)
         {
-            if (service.IQueryable().Count(t => t.F_ParentId.Equals(keyValue)) > 0)
+            if (_repository.IQueryable().Count(t => t.F_ParentId.Equals(keyValue)) > 0)
             {
                 throw new Exception("删除失败！操作的对象包含了下级数据。");
             }
             else
             {
-                service.Delete(t => t.F_Id == keyValue);
+                _repository.Delete(t => t.F_Id == keyValue);
             }
         }
         public void SubmitForm(ModuleButtonEntity moduleButtonEntity, string keyValue)
@@ -47,12 +45,12 @@ namespace BH.Application.SystemManage
             if (!string.IsNullOrEmpty(keyValue))
             {
                 moduleButtonEntity.Modify(keyValue);
-                service.Update(moduleButtonEntity);
+                _repository.Update(moduleButtonEntity);
             }
             else
             {
                 moduleButtonEntity.Create();
-                service.Insert(moduleButtonEntity);
+                _repository.Insert(moduleButtonEntity);
             }
         }
         public void SubmitCloneButton(string moduleId, string Ids)
@@ -65,9 +63,10 @@ namespace BH.Application.SystemManage
                 ModuleButtonEntity moduleButtonEntity = data.Find(t => t.F_Id == item);
                 moduleButtonEntity.F_Id = Common.GuId();
                 moduleButtonEntity.F_ModuleId = moduleId;
+                moduleButtonEntity.Create();
                 entitys.Add(moduleButtonEntity);
             }
-            service.SubmitCloneButton(entitys);
+            _repository.Insert(entitys);
         }
     }
 }

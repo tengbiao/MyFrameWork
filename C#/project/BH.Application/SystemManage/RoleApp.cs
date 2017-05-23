@@ -1,23 +1,29 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
+using BH.Data;
 using BH.Domain.Entity.SystemManage;
-using BH.Repository.IRepository.SystemManage;
-using BH.Repository.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BH.Application.SystemManage
 {
-    public class RoleApp
+    public class RoleApp : IRoleApp
     {
-        private IRoleRepository service = new RoleRepository();
-        private ModuleApp moduleApp = new ModuleApp();
-        private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
+        private readonly IRepository<RoleEntity> _repository;
+        private readonly IRepository<RoleAuthorizeEntity> _roleAuthorizeRepository;
+        private readonly IRepository<ModuleEntity> _moduleRepository;
+        private readonly IRepository<ModuleButtonEntity> _moduleButtonRepository;
+
+        public RoleApp(IRepository<RoleEntity> repository,
+            IRepository<RoleAuthorizeEntity> roleAuthorizeRepository,
+            IRepository<ModuleEntity> moduleRepository,
+            IRepository<ModuleButtonEntity> moduleButtonRepository)
+        {
+            _repository = repository;
+            _roleAuthorizeRepository = roleAuthorizeRepository;
+            _moduleRepository = moduleRepository;
+            _moduleButtonRepository = moduleButtonRepository;
+        }
 
         public List<RoleEntity> GetList(string keyword = "")
         {
@@ -28,16 +34,23 @@ namespace BH.Application.SystemManage
                 expression = expression.Or(t => t.F_EnCode.Contains(keyword));
             }
             expression = expression.And(t => t.F_Category == 1);
-            return service.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
         }
+
         public RoleEntity GetForm(string keyValue)
         {
-            return service.FindKey(keyValue);
+            return _repository.FindKey(keyValue);
         }
+
         public void DeleteForm(string keyValue)
         {
-            service.DeleteForm(keyValue);
+            _repository.LazySaveChanges();
+            _roleAuthorizeRepository.LazySaveChanges();
+            _repository.Delete(t => t.F_Id == keyValue);
+            _roleAuthorizeRepository.Delete(t => t.F_ObjectId == keyValue);
+            _repository.SaveChanges(true);
         }
+
         public void SubmitForm(RoleEntity roleEntity, string[] permissionIds, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
@@ -48,8 +61,8 @@ namespace BH.Application.SystemManage
             {
                 roleEntity.F_Id = Common.GuId();
             }
-            var moduledata = moduleApp.GetList();
-            var buttondata = moduleButtonApp.GetList();
+            var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+            var buttondata = _repository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
             List<RoleAuthorizeEntity> roleAuthorizeEntitys = new List<RoleAuthorizeEntity>();
             foreach (var itemId in permissionIds)
             {
@@ -68,7 +81,22 @@ namespace BH.Application.SystemManage
                 }
                 roleAuthorizeEntitys.Add(roleAuthorizeEntity);
             }
-            service.SubmitForm(roleEntity, roleAuthorizeEntitys, keyValue);
+
+            using (var scope = new System.Transactions.TransactionScope())
+            {
+                if (!string.IsNullOrEmpty(keyValue))
+                {
+                    _repository.Update(roleEntity);
+                }
+                else
+                {
+                    roleEntity.F_Category = 1;
+                    _repository.Insert(roleEntity);
+                }
+                _roleAuthorizeRepository.Delete(t => t.F_ObjectId == roleEntity.F_Id);
+                _roleAuthorizeRepository.Insert(roleAuthorizeEntitys);
+                scope.Complete();
+            }
         }
     }
 }

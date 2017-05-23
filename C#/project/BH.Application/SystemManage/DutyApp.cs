@@ -1,13 +1,7 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
+using BH.Data;
 using BH.Domain.Entity.SystemManage;
-using BH.Repository.IRepository.SystemManage;
-using BH.Repository.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,8 +9,11 @@ namespace BH.Application.SystemManage
 {
     public class DutyApp : IDutyApp
     {
-        private IRoleRepository service = new RoleRepository();
-
+        private readonly IRepository<RoleEntity> _repository;
+        public DutyApp(IRepository<RoleEntity> repository)
+        {
+            this._repository = repository;
+        }
         public List<RoleEntity> GetList(string keyword = "")
         {
             var expression = ExtLinq.True<RoleEntity>();
@@ -26,28 +23,28 @@ namespace BH.Application.SystemManage
                 expression = expression.Or(t => t.F_EnCode.Contains(keyword));
             }
             expression = expression.And(t => t.F_Category == 2);
-            return service.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
         }
         public RoleEntity GetForm(string keyValue)
         {
-            return service.FindKey(keyValue);
+            return _repository.FindKey(keyValue);
         }
         public void DeleteForm(string keyValue)
         {
-            service.Delete(t => t.F_Id == keyValue);
+            _repository.Delete(t => t.F_Id == keyValue);
         }
         public void SubmitForm(RoleEntity roleEntity, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
                 roleEntity.Modify(keyValue);
-                service.Update(roleEntity);
+                _repository.Update(roleEntity);
             }
             else
             {
                 roleEntity.Create();
                 roleEntity.F_Category = 2;
-                service.Insert(roleEntity);
+                _repository.Insert(roleEntity);
             }
         }
     }

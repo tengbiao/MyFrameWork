@@ -1,11 +1,6 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
 using BH.Domain.Entity.SystemSecurity;
+using BH.IApplication;
 using BH.Repository.IRepository.SystemSecurity;
 using BH.Repository.SystemSecurity;
 using System;
@@ -14,7 +9,7 @@ using System.Linq;
 
 namespace BH.Application.SystemSecurity
 {
-    public class DbBackupApp
+    public class DbBackupApp : IDbBackupApp
     {
         private IDbBackupRepository service = new DbBackupRepository();
 

@@ -7,19 +7,24 @@
 using BH.Application.SystemSecurity;
 using BH.Code;
 using BH.Domain.Entity.SystemSecurity;
+using BH.IApplication;
 using System.Web.Mvc;
 
 namespace BH.Web.Areas.SystemSecurity.Controllers
 {
     public class DbBackupController : ControllerBase
     {
-        private DbBackupApp dbBackupApp = new DbBackupApp();
+        private readonly IDbBackupApp _dbBackupApp;
+        public DbBackupController(IDbBackupApp dbBackupApp)
+        {
+            _dbBackupApp = dbBackupApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetGridJson(string queryJson)
         {
-            var data = dbBackupApp.GetList(queryJson);
+            var data = _dbBackupApp.GetList(queryJson);
             return Content(data.ToJson());
         }
         [HttpPost]
@@ -29,7 +34,7 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         {
             dbBackupEntity.F_FilePath = Server.MapPath("~/Resource/DbBackup/" + dbBackupEntity.F_FileName + ".bak");
             dbBackupEntity.F_FileName = dbBackupEntity.F_FileName + ".bak";
-            dbBackupApp.SubmitForm(dbBackupEntity);
+            _dbBackupApp.SubmitForm(dbBackupEntity);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -38,14 +43,14 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteForm(string keyValue)
         {
-            dbBackupApp.DeleteForm(keyValue);
+            _dbBackupApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
         [HttpPost]
         [HandlerAuthorize]
         public void DownloadBackup(string keyValue)
         {
-            var data = dbBackupApp.GetForm(keyValue);
+            var data = _dbBackupApp.GetForm(keyValue);
             string filename = Server.UrlDecode(data.F_FileName);
             string filepath = Server.MapPath(data.F_FilePath);
             if (FileDownHelper.FileExists(filepath))

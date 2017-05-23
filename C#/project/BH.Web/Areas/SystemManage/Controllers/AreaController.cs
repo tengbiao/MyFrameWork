@@ -1,10 +1,4 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.IApplication.SystemManage;
+﻿using BH.Application.IApplication;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
 using System.Collections.Generic;
@@ -38,6 +32,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             }
             return Content(treeList.TreeSelectJson());
         }
+
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetTreeGridJson(string keyword)
@@ -62,6 +57,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             }
             return Content(treeList.TreeGridJson());
         }
+
         [HttpGet]
         [HandlerAjaxOnly]
         public async Task<ActionResult> GetFormJson(string keyValue)
@@ -69,6 +65,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             var data = await areaApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
+
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
@@ -77,6 +74,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             areaApp.SubmitForm(areaEntity, keyValue);
             return Success("操作成功。");
         }
+
         [HttpPost]
         [HandlerAjaxOnly]
         [HandlerAuthorize]

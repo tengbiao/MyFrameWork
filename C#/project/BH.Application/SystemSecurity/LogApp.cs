@@ -1,11 +1,7 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
+using BH.Data;
 using BH.Domain.Entity.SystemSecurity;
+using BH.IApplication;
 using BH.Repository.IRepository.SystemSecurity;
 using BH.Repository.SystemSecurity;
 using System;
@@ -13,9 +9,13 @@ using System.Collections.Generic;
 
 namespace BH.Application.SystemSecurity
 {
-    public class LogApp
+    public class LogApp : ILogApp
     {
-        private ILogRepository service = new LogRepository();
+        private readonly IRepository<LogEntity> _repository;
+        public LogApp(IRepository<LogEntity> repository)
+        {
+            this._repository = repository;
+        }
 
         public List<LogEntity> GetList(Pagination pagination, string queryJson)
         {
@@ -49,7 +49,7 @@ namespace BH.Application.SystemSecurity
                 }
                 expression = expression.And(t => t.F_Date >= startTime && t.F_Date <= endTime);
             }
-            return service.FindList(expression, pagination);
+            return _repository.FindList(expression, pagination);
         }
         public void RemoveLog(string keepTime)
         {
@@ -68,7 +68,7 @@ namespace BH.Application.SystemSecurity
             }
             var expression = ExtLinq.True<LogEntity>();
             expression = expression.And(t => t.F_Date <= operateTime);
-            service.Delete(expression);
+            _repository.Delete(expression);
         }
         public void WriteDbLog(bool result, string resultLog)
         {
@@ -82,16 +82,16 @@ namespace BH.Application.SystemSecurity
             logEntity.F_Result = result;
             logEntity.F_Description = resultLog;
             logEntity.Create();
-            service.Insert(logEntity);
+            _repository.Insert(logEntity);
         }
         public void WriteDbLog(LogEntity logEntity)
         {
             logEntity.F_Id = Common.GuId();
             logEntity.F_Date = DateTime.Now;
-            logEntity.F_IPAddress = "117.81.192.182";
+            logEntity.F_IPAddress = Net.Ip;
             logEntity.F_IPAddressName = Net.GetLocation(logEntity.F_IPAddress);
             logEntity.Create();
-            service.Insert(logEntity);
+            _repository.Insert(logEntity);
         }
     }
 }

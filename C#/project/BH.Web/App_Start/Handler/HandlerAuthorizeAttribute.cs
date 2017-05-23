@@ -1,5 +1,7 @@
 ﻿using BH.Application.SystemManage;
 using BH.Code;
+using BH.Code.Autofac;
+using BH.IApplication;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -8,6 +10,7 @@ namespace BH.Web
 {
     public class HandlerAuthorizeAttribute : ActionFilterAttribute
     {
+
         public bool Ignore { get; set; }
         public HandlerAuthorizeAttribute(bool ignore = true)
         {
@@ -33,11 +36,12 @@ namespace BH.Web
         }
         private bool ActionAuthorize(ActionExecutingContext filterContext)
         {
+            IRoleAuthorizeApp _roleAuthorizeApp = IocManage.Resolve<IRoleAuthorizeApp>();
             var operatorProvider = OperatorProvider.Provider.GetCurrent();
             var roleId = operatorProvider.RoleId;
             var moduleId = WebHelper.GetCookie("BH_currentmoduleid");
             var action = HttpContext.Current.Request.ServerVariables["SCRIPT_NAME"].ToString();
-            return new RoleAuthorizeApp().ActionValidate(roleId, moduleId, action);
+            return _roleAuthorizeApp.ActionValidate(roleId, moduleId, action);
         }
     }
 }

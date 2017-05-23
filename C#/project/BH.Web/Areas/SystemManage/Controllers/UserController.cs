@@ -7,6 +7,7 @@
 using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -16,8 +17,13 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class UserController : ControllerBase
     {
-        private UserApp userApp = new UserApp();
-        private UserLogOnApp userLogOnApp = new UserLogOnApp();
+        private readonly IUserApp _userApp;
+        private readonly IUserLogOnApp _userLogOnApp;
+        public UserController(IUserApp userApp, IUserLogOnApp userLogOnApp)
+        {
+            _userApp = userApp;
+            _userLogOnApp = userLogOnApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]
@@ -25,7 +31,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = new
             {
-                rows = userApp.GetList(pagination, keyword),
+                rows = _userApp.GetList(pagination, keyword),
                 total = pagination.total,
                 page = pagination.page,
                 records = pagination.records
@@ -36,7 +42,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
-            var data = userApp.GetForm(keyValue);
+            var data = _userApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
         [HttpPost]
@@ -44,7 +50,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitForm(UserEntity userEntity, UserLogOnEntity userLogOnEntity, string keyValue)
         {
-            userApp.SubmitForm(userEntity, userLogOnEntity, keyValue);
+            _userApp.SubmitForm(userEntity, userLogOnEntity, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -53,7 +59,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteForm(string keyValue)
         {
-            userApp.DeleteForm(keyValue);
+            _userApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
         [HttpGet]
@@ -67,7 +73,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitRevisePassword(string userPassword, string keyValue)
         {
-            userLogOnApp.RevisePassword(userPassword, keyValue);
+            _userLogOnApp.RevisePassword(userPassword, keyValue);
             return Success("重置密码成功。");
         }
         [HttpPost]
@@ -79,7 +85,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             UserEntity userEntity = new UserEntity();
             userEntity.F_Id = keyValue;
             userEntity.F_EnabledMark = false;
-            userApp.UpdateForm(userEntity);
+            _userApp.UpdateForm(userEntity);
             return Success("账户禁用成功。");
         }
         [HttpPost]
@@ -91,7 +97,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             UserEntity userEntity = new UserEntity();
             userEntity.F_Id = keyValue;
             userEntity.F_EnabledMark = true;
-            userApp.UpdateForm(userEntity);
+            _userApp.UpdateForm(userEntity);
             return Success("账户启用成功。");
         }
 

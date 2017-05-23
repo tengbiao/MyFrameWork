@@ -1,41 +1,44 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
 using BH.Domain.Entity.SystemManage;
-using BH.Repository.IRepository.SystemManage;
 using BH.Domain.ViewModel;
-using BH.Repository.SystemManage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BH.IApplication;
+using BH.Data;
 
 namespace BH.Application.SystemManage
 {
-    public class RoleAuthorizeApp
+    public class RoleAuthorizeApp : IRoleAuthorizeApp
     {
-        private IRoleAuthorizeRepository service = new RoleAuthorizeRepository();
-        private ModuleApp moduleApp = new ModuleApp();
-        private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
+        private readonly IRepository<RoleAuthorizeEntity> _repository;
+        private readonly IRepository<ModuleEntity> _moduleRepository;
+        private readonly IRepository<ModuleButtonEntity> _moduleButtonRepository;
+
+        public RoleAuthorizeApp(IRepository<RoleAuthorizeEntity> repository,
+            IRepository<ModuleEntity> moduleRepository,
+            IRepository<ModuleButtonEntity> moduleButtonRepository)
+        {
+            _repository = repository;
+            _moduleRepository = moduleRepository;
+            _moduleButtonRepository = moduleButtonRepository;
+        }
 
         public List<RoleAuthorizeEntity> GetList(string ObjectId)
         {
-            return service.IQueryable(t => t.F_ObjectId == ObjectId).ToList();
+            return _repository.IQueryable(t => t.F_ObjectId == ObjectId).ToList();
         }
         public List<ModuleEntity> GetMenuList(string roleId)
         {
             var data = new List<ModuleEntity>();
             if (OperatorProvider.Provider.GetCurrent().IsSystem)
             {
-                data = moduleApp.GetList();
+                data = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
             }
             else
             {
-                var moduledata = moduleApp.GetList();
-                var authorizedata = service.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 1).ToList();
+                var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 1).ToList();
                 foreach (var item in authorizedata)
                 {
                     ModuleEntity moduleEntity = moduledata.Find(t => t.F_Id == item.F_ItemId);
@@ -52,12 +55,12 @@ namespace BH.Application.SystemManage
             var data = new List<ModuleButtonEntity>();
             if (OperatorProvider.Provider.GetCurrent().IsSystem)
             {
-                data = moduleButtonApp.GetList();
+                data = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
             }
             else
             {
-                var buttondata = moduleButtonApp.GetList();
-                var authorizedata = service.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 2).ToList();
+                var buttondata = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 2).ToList();
                 foreach (var item in authorizedata)
                 {
                     ModuleButtonEntity moduleButtonEntity = buttondata.Find(t => t.F_Id == item.F_ItemId);
@@ -75,9 +78,9 @@ namespace BH.Application.SystemManage
             var cachedata = CacheFactory.Cache().GetCache<List<AuthorizeActionModel>>("authorizeurldata_" + roleId);
             if (cachedata == null)
             {
-                var moduledata = moduleApp.GetList();
-                var buttondata = moduleButtonApp.GetList();
-                var authorizedata = service.IQueryable(t => t.F_ObjectId == roleId).ToList();
+                var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                var buttondata = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId).ToList();
                 foreach (var item in authorizedata)
                 {
                     if (item.F_ItemType == 1)

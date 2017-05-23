@@ -17,16 +17,16 @@ namespace BH.Repository.SystemSecurity
     {
         public void DeleteForm(string keyValue)
         {
-            //using (var db = new RepositoryBase().BeginTrans())
-            //{
-            //    var dbBackupEntity = db.FindEntity<DbBackupEntity>(keyValue);
-            //    if (dbBackupEntity != null)
-            //    {
-            //        FileHelper.DeleteFile(dbBackupEntity.F_FilePath);
-            //    }
-            //    db.Delete<DbBackupEntity>(dbBackupEntity);
-            //    db.Commit();
-            //}
+            using (var scope = new System.Transactions.TransactionScope())
+            {
+                var dbBackupEntity = FindKey(keyValue);
+                if (dbBackupEntity != null)
+                {
+                    FileHelper.DeleteFile(dbBackupEntity.F_FilePath);
+                }
+                Delete(dbBackupEntity);
+                scope.Complete();
+            }
         }
         public async void ExecuteDbBackup(DbBackupEntity dbBackupEntity)
         {

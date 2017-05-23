@@ -20,3 +20,5 @@
 /C#/project/BH.Web/Resource/DbBackup
 /C#/project/packages
 /C#/project/BH.Code/obj/Debug
+/C#/project/BH.Code/bin/Debug
+/C#/project/BH.Mapping/bin/Debug

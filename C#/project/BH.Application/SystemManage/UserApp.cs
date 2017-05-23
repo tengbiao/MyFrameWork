@@ -1,22 +1,21 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
+using BH.Data;
 using BH.Domain.Entity.SystemManage;
-using BH.Repository.IRepository.SystemManage;
-using BH.Repository.SystemManage;
+using BH.IApplication;
 using System;
 using System.Collections.Generic;
 
 namespace BH.Application.SystemManage
 {
-    public class UserApp
+    public class UserApp : IUserApp
     {
-        private IUserRepository service = new UserRepository();
-        private UserLogOnApp userLogOnApp = new UserLogOnApp();
+        private readonly IRepository<UserEntity> _repository;
+        private readonly IRepository<UserLogOnEntity> _userLogOnRepository;
+        public UserApp(IRepository<UserEntity> repository, IRepository<UserLogOnEntity> userLogOnEntityRepository)
+        {
+            _repository = repository;
+            _userLogOnRepository = userLogOnEntityRepository;
+        }
 
         public List<UserEntity> GetList(Pagination pagination, string keyword)
         {
@@ -28,15 +27,19 @@ namespace BH.Application.SystemManage
                 expression = expression.Or(t => t.F_MobilePhone.Contains(keyword));
             }
             expression = expression.And(t => t.F_Account != "admin");
-            return service.FindList(expression, pagination);
+            return _repository.FindList(expression, pagination);
         }
         public UserEntity GetForm(string keyValue)
         {
-            return service.FindKey(keyValue);
+            return _repository.FindKey(keyValue);
         }
         public void DeleteForm(string keyValue)
         {
-            service.DeleteForm(keyValue);
+            _repository.LazySaveChanges();
+            _userLogOnRepository.LazySaveChanges();
+            _repository.Delete(t => t.F_Id == keyValue);
+            _userLogOnRepository.Delete(t => t.F_UserId == keyValue);
+            _repository.SaveChanges(true);
         }
         public void SubmitForm(UserEntity userEntity, UserLogOnEntity userLogOnEntity, string keyValue)
         {
@@ -48,20 +51,36 @@ namespace BH.Application.SystemManage
             {
                 userEntity.Create();
             }
-            service.SubmitForm(userEntity, userLogOnEntity, keyValue);
+
+            _repository.LazySaveChanges();
+            _userLogOnRepository.LazySaveChanges();
+            if (!string.IsNullOrEmpty(keyValue))
+            {
+                _repository.Update(userEntity);
+            }
+            else
+            {
+                userLogOnEntity.F_Id = userEntity.F_Id;
+                userLogOnEntity.F_UserId = userEntity.F_Id;
+                userLogOnEntity.F_UserSecretkey = Md5.md5(Common.CreateNo(), 16).ToLower();
+                userLogOnEntity.F_UserPassword = Md5.md5(DESEncrypt.Encrypt(Md5.md5(userLogOnEntity.F_UserPassword, 32).ToLower(), userLogOnEntity.F_UserSecretkey).ToLower(), 32).ToLower();
+                _repository.Insert(userEntity);
+                _userLogOnRepository.Insert(userLogOnEntity);
+            }
+            _repository.SaveChanges(true);
         }
         public void UpdateForm(UserEntity userEntity)
         {
-            service.Update(userEntity);
+            _repository.Update(userEntity);
         }
         public UserEntity CheckLogin(string username, string password)
         {
-            UserEntity userEntity = service.FindEntity(t => t.F_Account == username);
+            UserEntity userEntity = _repository.FindEntity(t => t.F_Account == username);
             if (userEntity != null)
             {
                 if (userEntity.F_EnabledMark == true)
                 {
-                    UserLogOnEntity userLogOnEntity = userLogOnApp.GetForm(userEntity.F_Id);
+                    UserLogOnEntity userLogOnEntity = _userLogOnRepository.FindKey(userEntity.F_Id);
                     string dbPassword = Md5.md5(DESEncrypt.Encrypt(password.ToLower(), userLogOnEntity.F_UserSecretkey).ToLower(), 32).ToLower();
                     if (dbPassword == userLogOnEntity.F_UserPassword)
                     {
@@ -73,7 +92,7 @@ namespace BH.Application.SystemManage
                         }
                         userLogOnEntity.F_LastVisitTime = lastVisitTime;
                         userLogOnEntity.F_LogOnCount = LogOnCount;
-                        userLogOnApp.UpdateForm(userLogOnEntity);
+                        _userLogOnRepository.Update(userLogOnEntity);
                         return userEntity;
                     }
                     else
