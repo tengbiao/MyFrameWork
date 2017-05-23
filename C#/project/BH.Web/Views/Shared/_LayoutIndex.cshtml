@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/framework-font.css" rel="stylesheet" />
+    <link href="~/Content/css/framework-theme.css" rel="stylesheet" />
+    <script src="~/Content/plugins/jquery/jquery-2.1.1.min.js"></script>
+    <script src="~/Content/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/Content/plugins/bootstrap/bootstrap.js"></script>
+    <link href="~/Content/plugins/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Content/plugins/layout/jquery.layout.js"></script>
+    <script src="~/Content/plugins/wdtree/tree.js"></script>
+    <link href="~/Content/plugins/wdtree/tree.css" rel="stylesheet" />
+    <script src="~/Content/plugins/jqgrid/jqgrid.min.js"></script>
+    <link href="~/Content/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+    <script src="~/Content/plugins/jqgrid/grid.locale-cn.js"></script>
+    <link href="~/Content/css/framework-ui.css" rel="stylesheet" />
+    <script src="~/Content/js/framework-ui.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    @RenderBody()
+    @Html.AntiForgeryToken()
+</body>
+</html>

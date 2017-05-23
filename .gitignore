@@ -3,3 +3,20 @@
 ################################################################################
 
 /C#/doc/AdminLTE-2.3.11.zip
+/C#/doc/AdminLTE-2.3.11
+/C#/project/.vs
+/C#/project/BH.Application/bin/Debug
+/C#/project/BH.Application/obj/Debug
+/C#/project/BH.Data/bin/Debug
+/C#/project/BH.Data/obj/Debug
+/C#/project/BH.Domain/bin/Debug
+/C#/project/BH.Domain/obj/Debug
+/C#/project/BH.Mapping/obj/Debug
+/C#/project/BH.Repository/bin/Debug
+/C#/project/BH.Repository/obj/Debug
+/C#/project/BH.Web/bin
+/C#/project/BH.Web/obj/Debug
+/C#/project/BH.Web/Properties/PublishProfiles
+/C#/project/BH.Web/Resource/DbBackup
+/C#/project/packages
+/C#/project/BH.Code/obj/Debug
