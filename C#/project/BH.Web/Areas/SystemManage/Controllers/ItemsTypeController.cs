@@ -1,12 +1,7 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
+﻿using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -15,13 +10,17 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class ItemsTypeController : ControllerBase
     {
-        private ItemsApp itemsApp = new ItemsApp();
+        private readonly IItemsApp _itemsApp;
+        public ItemsTypeController(IItemsApp itemsApp)
+        {
+            _itemsApp = itemsApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetTreeSelectJson()
         {
-            var data = itemsApp.GetList();
+            var data = _itemsApp.GetList();
             var treeList = new List<TreeSelectModel>();
             foreach (ItemsEntity item in data)
             {
@@ -37,7 +36,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetTreeJson()
         {
-            var data = itemsApp.GetList();
+            var data = _itemsApp.GetList();
             var treeList = new List<TreeViewModel>();
             foreach (ItemsEntity item in data)
             {
@@ -58,7 +57,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetTreeGridJson()
         {
-            var data = itemsApp.GetList();
+            var data = _itemsApp.GetList();
             var treeList = new List<TreeGridModel>();
             foreach (ItemsEntity item in data)
             {
@@ -77,7 +76,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
-            var data = itemsApp.GetForm(keyValue);
+            var data = _itemsApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
         [HttpPost]
@@ -85,7 +84,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitForm(ItemsEntity itemsEntity, string keyValue)
         {
-            itemsApp.SubmitForm(itemsEntity, keyValue);
+            _itemsApp.SubmitForm(itemsEntity, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -93,7 +92,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteForm(string keyValue)
         {
-            itemsApp.DeleteForm(keyValue);
+            _itemsApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
     }

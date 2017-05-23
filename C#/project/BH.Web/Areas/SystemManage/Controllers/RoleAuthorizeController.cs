@@ -7,6 +7,7 @@
 using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -15,9 +16,16 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class RoleAuthorizeController : ControllerBase
     {
-        private RoleAuthorizeApp roleAuthorizeApp = new RoleAuthorizeApp();
-        private ModuleApp moduleApp = new ModuleApp();
-        private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
+        private readonly IRoleAuthorizeApp roleAuthorizeApp;
+        private readonly IModuleApp moduleApp;
+        private readonly IModuleButtonApp moduleButtonApp;
+        public RoleAuthorizeController(IRoleAuthorizeApp roleAuthorizeApp,
+            IModuleApp moduleApp, IModuleButtonApp moduleButtonApp)
+        {
+            this.roleAuthorizeApp = roleAuthorizeApp;
+            this.moduleApp = moduleApp;
+            this.moduleButtonApp = moduleButtonApp;
+        }
 
         public ActionResult GetPermissionTree(string roleId)
         {

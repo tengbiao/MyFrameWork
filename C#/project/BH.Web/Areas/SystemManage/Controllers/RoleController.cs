@@ -1,13 +1,6 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
-using BH.Code;
+﻿using BH.Code;
 using BH.Domain.Entity.SystemManage;
-using System.Collections.Generic;
+using BH.IApplication;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -15,10 +8,18 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class RoleController : ControllerBase
     {
-        private RoleApp roleApp = new RoleApp();
-        private RoleAuthorizeApp roleAuthorizeApp = new RoleAuthorizeApp();
-        private ModuleApp moduleApp = new ModuleApp();
-        private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
+        private readonly IRoleApp roleApp;
+        private readonly IRoleAuthorizeApp roleAuthorizeApp;
+        private readonly IModuleApp moduleApp;
+        private readonly IModuleButtonApp moduleButtonApp;
+        public RoleController(IRoleApp roleApp, IRoleAuthorizeApp roleAuthorizeApp,
+            IModuleApp moduleApp, IModuleButtonApp moduleButtonApp)
+        {
+            this.roleApp = roleApp;
+            this.roleAuthorizeApp = roleAuthorizeApp;
+            this.moduleApp = moduleApp;
+            this.moduleButtonApp = moduleButtonApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]

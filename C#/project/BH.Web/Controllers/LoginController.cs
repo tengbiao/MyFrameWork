@@ -1,15 +1,7 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Domain.Entity.SystemSecurity;
-using BH.Application.SystemSecurity;
+﻿using BH.Domain.Entity.SystemSecurity;
 using System;
 using System.Web.Mvc;
 using BH.Domain.Entity.SystemManage;
-using BH.Application.SystemManage;
 using BH.Code;
 using BH.IApplication;
 using BH.Application;
@@ -20,10 +12,11 @@ namespace BH.Web.Controllers
     {
         private readonly ILogApp _logApp;
         private readonly IUserApp _userApp;
+
         public LoginController(ILogApp logApp, IUserApp userApp)
         {
-            _logApp = logApp;
-            _userApp = userApp;
+            this._logApp = logApp;
+            this._userApp = userApp;
         }
 
         [HttpGet]

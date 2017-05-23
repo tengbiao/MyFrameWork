@@ -7,6 +7,7 @@
 using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -15,13 +16,19 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class ModuleButtonController : ControllerBase
     {
-        private ModuleApp moduleApp = new ModuleApp();
-        private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
+        private readonly IModuleApp _moduleApp;
+        private readonly IModuleButtonApp _moduleButtonApp;
+        public ModuleButtonController(IModuleApp moduleApp, IModuleButtonApp moduleButtonApp)
+        {
+            _moduleApp = moduleApp;
+            _moduleButtonApp = moduleButtonApp;
+        }
+
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetTreeSelectJson(string moduleId)
         {
-            var data = moduleButtonApp.GetList(moduleId);
+            var data = _moduleButtonApp.GetList(moduleId);
             var treeList = new List<TreeSelectModel>();
             foreach (ModuleButtonEntity item in data)
             {
@@ -37,7 +44,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetTreeGridJson(string moduleId)
         {
-            var data = moduleButtonApp.GetList(moduleId);
+            var data = _moduleButtonApp.GetList(moduleId);
             var treeList = new List<TreeGridModel>();
             foreach (ModuleButtonEntity item in data)
             {
@@ -56,7 +63,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
-            var data = moduleButtonApp.GetForm(keyValue);
+            var data = _moduleButtonApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
         [HttpPost]
@@ -64,7 +71,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitForm(ModuleButtonEntity moduleButtonEntity, string keyValue)
         {
-            moduleButtonApp.SubmitForm(moduleButtonEntity, keyValue);
+            _moduleButtonApp.SubmitForm(moduleButtonEntity, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -72,7 +79,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteForm(string keyValue)
         {
-            moduleButtonApp.DeleteForm(keyValue);
+            _moduleButtonApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
         [HttpGet]
@@ -84,8 +91,8 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetCloneButtonTreeJson()
         {
-            var moduledata = moduleApp.GetList();
-            var buttondata = moduleButtonApp.GetList();
+            var moduledata = _moduleApp.GetList();
+            var buttondata = _moduleButtonApp.GetList();
             var treeList = new List<TreeViewModel>();
             foreach (ModuleEntity item in moduledata)
             {
@@ -131,7 +138,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult SubmitCloneButton(string moduleId, string Ids)
         {
-            moduleButtonApp.SubmitCloneButton(moduleId, Ids);
+            _moduleButtonApp.SubmitCloneButton(moduleId, Ids);
             return Success("克隆成功。");
         }
     }

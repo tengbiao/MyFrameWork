@@ -23,17 +23,17 @@ namespace BH.Web.App_Start
 
             //第一步： 构造一个AutoFac的builder容器  
             ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterControllers(typeof(AutoFacConfig).Assembly);
-            var controllerAss = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var item in AppDomain.CurrentDomain.GetAssemblies())
             {
                 string name = item.GetName().Name;
                 if (new string[] { "BH.Application", "BH.Repository", "BH.Data" }.Count(a => a == name) > 0)
                 {
                     Type[] stypes = item.GetTypes();
-                    builder.RegisterTypes(stypes).AsImplementedInterfaces();
+                    builder.RegisterTypes(stypes).Where(i => i.Name.EndsWith("App")
+                    || i.Name.EndsWith("Repository")).AsImplementedInterfaces().InstancePerRequest(); ;
                 }
             }
+            builder.RegisterControllers(typeof(AutoFacConfig).Assembly);
 
             //第四步：创建一个真正的AutoFac的工作容器  
             var container = builder.Build();

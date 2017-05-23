@@ -7,6 +7,7 @@
 using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -15,13 +16,17 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class OrganizeController : ControllerBase
     {
-        private OrganizeApp organizeApp = new OrganizeApp();
+        private readonly IOrganizeApp _organizeApp;
+        public OrganizeController(IOrganizeApp organizeApp)
+        {
+            _organizeApp = organizeApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetTreeSelectJson()
         {
-            var data = organizeApp.GetList();
+            var data = _organizeApp.GetList();
             var treeList = new List<TreeSelectModel>();
             foreach (OrganizeEntity item in data)
             {
@@ -38,7 +43,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetTreeJson()
         {
-            var data = organizeApp.GetList();
+            var data = _organizeApp.GetList();
             var treeList = new List<TreeViewModel>();
             foreach (OrganizeEntity item in data)
             {
@@ -59,7 +64,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetTreeGridJson(string keyword)
         {
-            var data = organizeApp.GetList();
+            var data = _organizeApp.GetList();
             if (!string.IsNullOrEmpty(keyword))
             {
                 data = data.TreeWhere(t => t.F_FullName.Contains(keyword));
@@ -82,7 +87,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
-            var data = organizeApp.GetForm(keyValue);
+            var data = _organizeApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
         [HttpPost]
@@ -90,7 +95,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitForm(OrganizeEntity organizeEntity, string keyValue)
         {
-            organizeApp.SubmitForm(organizeEntity, keyValue);
+            _organizeApp.SubmitForm(organizeEntity, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -99,7 +104,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteForm(string keyValue)
         {
-            organizeApp.DeleteForm(keyValue);
+            _organizeApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
     }

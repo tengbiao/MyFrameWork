@@ -1,12 +1,6 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
-using BH.Code;
+﻿using BH.Code;
 using BH.Domain.Entity.SystemManage;
+using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -15,13 +9,17 @@ namespace BH.Web.Areas.SystemManage.Controllers
 {
     public class ModuleController : ControllerBase
     {
-        private ModuleApp moduleApp = new ModuleApp();
+        private readonly IModuleApp _moduleApp;
+        public ModuleController(IModuleApp moduleApp)
+        {
+            _moduleApp = moduleApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]
         public ActionResult GetTreeSelectJson()
         {
-            var data = moduleApp.GetList();
+            var data = _moduleApp.GetList();
             var treeList = new List<TreeSelectModel>();
             foreach (ModuleEntity item in data)
             {
@@ -37,7 +35,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetTreeGridJson(string keyword)
         {
-            var data = moduleApp.GetList();
+            var data = _moduleApp.GetList();
             if (!string.IsNullOrEmpty(keyword))
             {
                 data = data.TreeWhere(t => t.F_FullName.Contains(keyword));
@@ -60,7 +58,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
-            var data = moduleApp.GetForm(keyValue);
+            var data = _moduleApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
         [HttpPost]
@@ -68,7 +66,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitForm(ModuleEntity moduleEntity, string keyValue)
         {
-            moduleApp.SubmitForm(moduleEntity, keyValue);
+            _moduleApp.SubmitForm(moduleEntity, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -77,7 +75,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteForm(string keyValue)
         {
-            moduleApp.DeleteForm(keyValue);
+            _moduleApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
     }

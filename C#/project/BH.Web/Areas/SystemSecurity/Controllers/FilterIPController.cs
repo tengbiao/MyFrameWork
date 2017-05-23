@@ -7,13 +7,18 @@
 using BH.Application.SystemSecurity;
 using BH.Code;
 using BH.Domain.Entity.SystemSecurity;
+using BH.IApplication;
 using System.Web.Mvc;
 
 namespace BH.Web.Areas.SystemSecurity.Controllers
 {
     public class FilterIPController : ControllerBase
     {
-        private FilterIPApp filterIPApp = new FilterIPApp();
+        private readonly IFilterIPApp filterIPApp;
+        public FilterIPController(IFilterIPApp filterIPApp)
+        {
+            this.filterIPApp = filterIPApp;
+        }
 
         [HttpGet]
         [HandlerAjaxOnly]

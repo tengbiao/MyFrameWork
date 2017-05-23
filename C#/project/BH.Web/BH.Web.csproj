@@ -659,6 +659,10 @@
       <Project>{4e642cbe-f6c5-4cb9-9474-6b349652fe77}</Project>
       <Name>BH.Mapping</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BH.Repository\BH.Repository.csproj">
+      <Project>{875233BF-EA15-49E0-9A9C-77884A897FF6}</Project>
+      <Name>BH.Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
