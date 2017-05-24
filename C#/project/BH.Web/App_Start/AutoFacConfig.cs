@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Linq;
+using BH.Data;
 
 namespace BH.Web.App_Start
 {
@@ -23,17 +24,21 @@ namespace BH.Web.App_Start
 
             //第一步： 构造一个AutoFac的builder容器  
             ContainerBuilder builder = new ContainerBuilder();
+            //注册仓储基类
+            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
+            //注册控制器
+            builder.RegisterControllers(typeof(AutoFacConfig).Assembly);
+            //注册所有的 AppService 和 Repository
             foreach (var item in AppDomain.CurrentDomain.GetAssemblies())
             {
                 string name = item.GetName().Name;
-                if (new string[] { "BH.Application", "BH.Repository", "BH.Data" }.Count(a => a == name) > 0)
+                if (new string[] { "BH.Application", "BH.Repository" }.Count(a => a == name) > 0)
                 {
                     Type[] stypes = item.GetTypes();
                     builder.RegisterTypes(stypes).Where(i => i.Name.EndsWith("App")
-                    || i.Name.EndsWith("Repository")).AsImplementedInterfaces().InstancePerRequest(); ;
+                    || i.Name.EndsWith("Repository")).AsImplementedInterfaces();
                 }
             }
-            builder.RegisterControllers(typeof(AutoFacConfig).Assembly);
 
             //第四步：创建一个真正的AutoFac的工作容器  
             var container = builder.Build();

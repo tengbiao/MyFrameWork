@@ -81,38 +81,29 @@ namespace BH.Application.SystemManage
                 var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
                 var buttondata = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
                 var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId).ToList();
-                foreach (var item in authorizedata)
-                {
-                    if (item.F_ItemType == 1)
+
+                //添加模块权限
+                authorizeurldata.AddRange(moduledata.Where(s => authorizedata.Where(a => a.F_ItemType == 1).Select(m => m.F_ItemId).Contains(s.F_Id))
+                    .Select(r => new AuthorizeActionModel()
                     {
-                        ModuleEntity moduleEntity = moduledata.Find(t => t.F_Id == item.F_ItemId);
-                        authorizeurldata.Add(new AuthorizeActionModel { F_Id = moduleEntity.F_Id, F_UrlAddress = moduleEntity.F_UrlAddress });
-                    }
-                    else if (item.F_ItemType == 2)
-                    {
-                        ModuleButtonEntity moduleButtonEntity = buttondata.Find(t => t.F_Id == item.F_ItemId);
-                        authorizeurldata.Add(new AuthorizeActionModel { F_Id = moduleButtonEntity.F_ModuleId, F_UrlAddress = moduleButtonEntity.F_UrlAddress });
-                    }
-                }
+                        F_Id = r.F_Id,
+                        F_UrlAddress = r.F_UrlAddress
+                    }));
+
+                //添加按钮权限
+                authorizeurldata.AddRange(buttondata.Where(s => authorizedata.Where(a => a.F_ItemType == 2).Select(m => m.F_ItemId).Contains(s.F_Id))
+                   .Select(r => new AuthorizeActionModel()
+                   {
+                       F_Id = r.F_ModuleId,
+                       F_UrlAddress = r.F_UrlAddress
+                   }));
                 CacheFactory.Cache().WriteCache(authorizeurldata, "authorizeurldata_" + roleId, DateTime.Now.AddMinutes(5));
             }
             else
             {
                 authorizeurldata = cachedata;
             }
-            authorizeurldata = authorizeurldata.FindAll(t => t.F_Id.Equals(moduleId));
-            foreach (var item in authorizeurldata)
-            {
-                if (!string.IsNullOrEmpty(item.F_UrlAddress))
-                {
-                    string[] url = item.F_UrlAddress.Split('?');
-                    if (item.F_Id == moduleId && url[0] == action)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return authorizeurldata.Count(a => a.F_Id.Equals(moduleId) && a.F_UrlAddress.Equals(action)) > 0;
         }
     }
 }

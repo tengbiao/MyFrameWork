@@ -651,6 +651,10 @@
       <Project>{db19ce03-c307-43fe-a209-08aa4ae10e21}</Project>
       <Name>BH.Code</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BH.Data\BH.Data.csproj">
+      <Project>{f71003e8-a836-48f4-9df6-df9095cebd18}</Project>
+      <Name>BH.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BH.Domain\BH.Domain.csproj">
       <Project>{7dc886cd-b8a0-44e8-aadd-57fcb0cfecb8}</Project>
       <Name>BH.Domain</Name>

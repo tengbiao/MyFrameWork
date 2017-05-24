@@ -2,8 +2,6 @@
 using BH.Data;
 using BH.Domain.Entity.SystemSecurity;
 using BH.IApplication;
-using BH.Repository.IRepository.SystemSecurity;
-using BH.Repository.SystemSecurity;
 using System;
 using System.Collections.Generic;
 
