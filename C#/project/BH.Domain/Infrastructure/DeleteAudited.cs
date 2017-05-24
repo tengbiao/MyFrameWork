@@ -5,6 +5,8 @@
  * Website：http://www.BH.cn
 *********************************************************************************/
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BH.Domain.Infrastructure
 {
@@ -18,6 +20,8 @@ namespace BH.Domain.Infrastructure
         /// <summary>
         /// 删除实体的用户
         /// </summary>
+        [MaxLength(50)]
+        [Column(TypeName = "varchar")]
         public string F_DeleteUserId { get; set; }
 
         /// <summary>

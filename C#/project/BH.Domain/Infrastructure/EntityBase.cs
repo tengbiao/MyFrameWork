@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ namespace BH.Domain.Infrastructure
     public class EntityBase<KeyType> : IEntityBase<KeyType>
     {
         [Key]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar")]
         public KeyType F_Id { set; get; }
 
         public void Create()

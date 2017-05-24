@@ -56,8 +56,8 @@
     <Compile Include="Entity\Sys_RoleAuthorize.cs" />
     <Compile Include="Entity\Sys_UserLogOn.cs" />
     <Compile Include="Entity\Sys_ItemsDetail.cs" />
-    <Compile Include="Entity\Sys_DbBackup.cs" />
     <Compile Include="Entity\Sys_FilterIP.cs" />
+    <Compile Include="Entity\Sys_DbBackup.cs" />
     <Compile Include="Entity\Sys_Log.cs" />
     <Compile Include="ViewModel\AuthorizeActionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

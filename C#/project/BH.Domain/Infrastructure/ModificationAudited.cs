@@ -5,11 +5,15 @@
  * Website：http://www.BH.cn
 *********************************************************************************/
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BH.Domain.Infrastructure
 {
     public class ModificationAudited<KeyType> : EntityBase<KeyType>, IModificationAudited<KeyType>
     {
+        [MaxLength(50)]
+        [Column(TypeName = "varchar")]
         public string F_LastModifyUserId { get; set; }
         public DateTime? F_LastModifyTime { get; set; }
     }

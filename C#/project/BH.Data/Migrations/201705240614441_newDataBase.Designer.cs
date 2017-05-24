@@ -7,13 +7,13 @@ namespace BH.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class NewDataBase : IMigrationMetadata
+    public sealed partial class newDataBase : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(NewDataBase));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(newDataBase));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705240444598_NewDataBase"; }
+            get { return "201705240614441_newDataBase"; }
         }
         
         string IMigrationMetadata.Source
