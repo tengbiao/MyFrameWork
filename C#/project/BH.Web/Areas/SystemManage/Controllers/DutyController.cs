@@ -6,7 +6,7 @@
 *********************************************************************************/
 using BH.Application.SystemManage;
 using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +39,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(RoleEntity roleEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_Role Sys_Role, string keyValue)
         {
-            _dutyApp.SubmitForm(roleEntity, keyValue);
+            _dutyApp.SubmitForm(Sys_Role, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

@@ -1,12 +1,5 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemSecurity;
-using BH.Code;
-using BH.Domain.Entity.SystemSecurity;
+﻿using BH.Code;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Web.Mvc;
 
@@ -37,9 +30,9 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(FilterIPEntity filterIPEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_FilterIP Sys_FilterIP, string keyValue)
         {
-            filterIPApp.SubmitForm(filterIPEntity, keyValue);
+            filterIPApp.SubmitForm(Sys_FilterIP, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class ModuleButtonMap : EntityTypeConfiguration<ModuleButtonEntity>
+    public class ModuleButtonMap : EntityTypeConfiguration<Sys_ModuleButton>
     {
         public ModuleButtonMap()
         {

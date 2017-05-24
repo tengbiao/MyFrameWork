@@ -6,7 +6,7 @@
 *********************************************************************************/
 using BH.Application.SystemManage;
 using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _organizeApp.GetList();
             var treeList = new List<TreeSelectModel>();
-            foreach (OrganizeEntity item in data)
+            foreach (Sys_Organize item in data)
             {
                 TreeSelectModel treeModel = new TreeSelectModel();
                 treeModel.id = item.F_Id;
@@ -45,7 +45,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _organizeApp.GetList();
             var treeList = new List<TreeViewModel>();
-            foreach (OrganizeEntity item in data)
+            foreach (Sys_Organize item in data)
             {
                 TreeViewModel tree = new TreeViewModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -70,7 +70,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
                 data = data.TreeWhere(t => t.F_FullName.Contains(keyword));
             }
             var treeList = new List<TreeGridModel>();
-            foreach (OrganizeEntity item in data)
+            foreach (Sys_Organize item in data)
             {
                 TreeGridModel treeModel = new TreeGridModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -93,9 +93,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(OrganizeEntity organizeEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_Organize Sys_Organize, string keyValue)
         {
-            _organizeApp.SubmitForm(organizeEntity, keyValue);
+            _organizeApp.SubmitForm(Sys_Organize, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

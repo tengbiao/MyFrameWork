@@ -1,6 +1,6 @@
 ﻿using BH.Code;
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +9,17 @@ namespace BH.Application.SystemManage
 {
     public class ItemsDetailApp : IItemsDetailApp
     {
-        private readonly IRepository<ItemsDetailEntity> _repository;
-        private readonly IRepository<ItemsEntity> _itemRepository;
-        public ItemsDetailApp(IRepository<ItemsDetailEntity> repository, IRepository<ItemsEntity> itemRepository)
+        private readonly IRepository<Sys_ItemsDetail> _repository;
+        private readonly IRepository<Sys_Items> _itemRepository;
+        public ItemsDetailApp(IRepository<Sys_ItemsDetail> repository, IRepository<Sys_Items> itemRepository)
         {
             _repository = repository;
             _itemRepository = itemRepository;
         }
 
-        public List<ItemsDetailEntity> GetList(string itemId = "", string keyword = "")
+        public List<Sys_ItemsDetail> GetList(string itemId = "", string keyword = "")
         {
-            var expression = ExtLinq.True<ItemsDetailEntity>();
+            var expression = ExtLinq.True<Sys_ItemsDetail>();
             if (!string.IsNullOrEmpty(itemId))
             {
                 expression = expression.And(t => t.F_ItemId == itemId);
@@ -31,7 +31,7 @@ namespace BH.Application.SystemManage
             }
             return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
         }
-        public List<ItemsDetailEntity> GetItemList(string enCode)
+        public List<Sys_ItemsDetail> GetItemList(string enCode)
         {
             var query = (from detail in _repository.IQueryable()
                          join item in _itemRepository.IQueryable()
@@ -42,7 +42,7 @@ namespace BH.Application.SystemManage
             );
             return query.ToList();
         }
-        public ItemsDetailEntity GetForm(string keyValue)
+        public Sys_ItemsDetail GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -50,17 +50,17 @@ namespace BH.Application.SystemManage
         {
             _repository.Delete(t => t.F_Id == keyValue);
         }
-        public void SubmitForm(ItemsDetailEntity itemsDetailEntity, string keyValue)
+        public void SubmitForm(Sys_ItemsDetail Sys_ItemsDetail, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                itemsDetailEntity.Modify(keyValue);
-                _repository.Update(itemsDetailEntity);
+                Sys_ItemsDetail.Modify(keyValue);
+                _repository.Update(Sys_ItemsDetail);
             }
             else
             {
-                itemsDetailEntity.Create();
-                _repository.Insert(itemsDetailEntity);
+                Sys_ItemsDetail.Create();
+                _repository.Insert(Sys_ItemsDetail);
             }
         }
     }

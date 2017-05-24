@@ -6,7 +6,7 @@
 *********************************************************************************/
 using BH.Application.SystemManage;
 using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using System.Collections.Generic;
 using System.Text;
 using System.Web.Mvc;

@@ -1,6 +1,7 @@
 ﻿using BH.Code;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace BH.Domain.Infrastructure
 {
     public class EntityBase<KeyType> : IEntityBase<KeyType>
     {
+        [Key]
         public KeyType F_Id { set; get; }
 
         public void Create()

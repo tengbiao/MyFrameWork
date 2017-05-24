@@ -1,6 +1,6 @@
 ﻿using BH.Code;
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +9,15 @@ namespace BH.Application.SystemManage
 {
     public class RoleApp : IRoleApp
     {
-        private readonly IRepository<RoleEntity> _repository;
-        private readonly IRepository<RoleAuthorizeEntity> _roleAuthorizeRepository;
-        private readonly IRepository<ModuleEntity> _moduleRepository;
-        private readonly IRepository<ModuleButtonEntity> _moduleButtonRepository;
+        private readonly IRepository<Sys_Role> _repository;
+        private readonly IRepository<Sys_RoleAuthorize> _roleAuthorizeRepository;
+        private readonly IRepository<Sys_Module> _moduleRepository;
+        private readonly IRepository<Sys_ModuleButton> _moduleButtonRepository;
 
-        public RoleApp(IRepository<RoleEntity> repository,
-            IRepository<RoleAuthorizeEntity> roleAuthorizeRepository,
-            IRepository<ModuleEntity> moduleRepository,
-            IRepository<ModuleButtonEntity> moduleButtonRepository)
+        public RoleApp(IRepository<Sys_Role> repository,
+            IRepository<Sys_RoleAuthorize> roleAuthorizeRepository,
+            IRepository<Sys_Module> moduleRepository,
+            IRepository<Sys_ModuleButton> moduleButtonRepository)
         {
             _repository = repository;
             _roleAuthorizeRepository = roleAuthorizeRepository;
@@ -25,9 +25,9 @@ namespace BH.Application.SystemManage
             _moduleButtonRepository = moduleButtonRepository;
         }
 
-        public List<RoleEntity> GetList(string keyword = "")
+        public List<Sys_Role> GetList(string keyword = "")
         {
-            var expression = ExtLinq.True<RoleEntity>();
+            var expression = ExtLinq.True<Sys_Role>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 expression = expression.And(t => t.F_FullName.Contains(keyword));
@@ -37,7 +37,7 @@ namespace BH.Application.SystemManage
             return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
         }
 
-        public RoleEntity GetForm(string keyValue)
+        public Sys_Role GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -51,50 +51,50 @@ namespace BH.Application.SystemManage
             _repository.SaveChanges(true);
         }
 
-        public void SubmitForm(RoleEntity roleEntity, string[] permissionIds, string keyValue)
+        public void SubmitForm(Sys_Role Sys_Role, string[] permissionIds, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                roleEntity.F_Id = keyValue;
+                Sys_Role.F_Id = keyValue;
             }
             else
             {
-                roleEntity.F_Id = Common.GuId();
+                Sys_Role.F_Id = Common.GuId();
             }
             var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
             var buttondata = _repository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
-            List<RoleAuthorizeEntity> roleAuthorizeEntitys = new List<RoleAuthorizeEntity>();
+            List<Sys_RoleAuthorize> Sys_RoleAuthorizes = new List<Sys_RoleAuthorize>();
             foreach (var itemId in permissionIds)
             {
-                RoleAuthorizeEntity roleAuthorizeEntity = new RoleAuthorizeEntity();
-                roleAuthorizeEntity.F_Id = Common.GuId();
-                roleAuthorizeEntity.F_ObjectType = 1;
-                roleAuthorizeEntity.F_ObjectId = roleEntity.F_Id;
-                roleAuthorizeEntity.F_ItemId = itemId;
+                Sys_RoleAuthorize Sys_RoleAuthorize = new Sys_RoleAuthorize();
+                Sys_RoleAuthorize.F_Id = Common.GuId();
+                Sys_RoleAuthorize.F_ObjectType = 1;
+                Sys_RoleAuthorize.F_ObjectId = Sys_Role.F_Id;
+                Sys_RoleAuthorize.F_ItemId = itemId;
                 if (moduledata.Find(t => t.F_Id == itemId) != null)
                 {
-                    roleAuthorizeEntity.F_ItemType = 1;
+                    Sys_RoleAuthorize.F_ItemType = 1;
                 }
                 if (buttondata.Find(t => t.F_Id == itemId) != null)
                 {
-                    roleAuthorizeEntity.F_ItemType = 2;
+                    Sys_RoleAuthorize.F_ItemType = 2;
                 }
-                roleAuthorizeEntitys.Add(roleAuthorizeEntity);
+                Sys_RoleAuthorizes.Add(Sys_RoleAuthorize);
             }
 
             using (var scope = new System.Transactions.TransactionScope())
             {
                 if (!string.IsNullOrEmpty(keyValue))
                 {
-                    _repository.Update(roleEntity);
+                    _repository.Update(Sys_Role);
                 }
                 else
                 {
-                    roleEntity.F_Category = 1;
-                    _repository.Insert(roleEntity);
+                    Sys_Role.F_Category = 1;
+                    _repository.Insert(Sys_Role);
                 }
-                _roleAuthorizeRepository.Delete(t => t.F_ObjectId == roleEntity.F_Id);
-                _roleAuthorizeRepository.Insert(roleAuthorizeEntitys);
+                _roleAuthorizeRepository.Delete(t => t.F_ObjectId == Sys_Role.F_Id);
+                _roleAuthorizeRepository.Insert(Sys_RoleAuthorizes);
                 scope.Complete();
             }
         }

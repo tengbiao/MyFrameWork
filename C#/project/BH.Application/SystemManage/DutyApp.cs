@@ -1,6 +1,6 @@
 ﻿using BH.Code;
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +9,14 @@ namespace BH.Application.SystemManage
 {
     public class DutyApp : IDutyApp
     {
-        private readonly IRepository<RoleEntity> _repository;
-        public DutyApp(IRepository<RoleEntity> repository)
+        private readonly IRepository<Sys_Role> _repository;
+        public DutyApp(IRepository<Sys_Role> repository)
         {
             this._repository = repository;
         }
-        public List<RoleEntity> GetList(string keyword = "")
+        public List<Sys_Role> GetList(string keyword = "")
         {
-            var expression = ExtLinq.True<RoleEntity>();
+            var expression = ExtLinq.True<Sys_Role>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 expression = expression.And(t => t.F_FullName.Contains(keyword));
@@ -25,7 +25,7 @@ namespace BH.Application.SystemManage
             expression = expression.And(t => t.F_Category == 2);
             return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
         }
-        public RoleEntity GetForm(string keyValue)
+        public Sys_Role GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -33,18 +33,18 @@ namespace BH.Application.SystemManage
         {
             _repository.Delete(t => t.F_Id == keyValue);
         }
-        public void SubmitForm(RoleEntity roleEntity, string keyValue)
+        public void SubmitForm(Sys_Role Sys_Role, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                roleEntity.Modify(keyValue);
-                _repository.Update(roleEntity);
+                Sys_Role.Modify(keyValue);
+                _repository.Update(Sys_Role);
             }
             else
             {
-                roleEntity.Create();
-                roleEntity.F_Category = 2;
-                _repository.Insert(roleEntity);
+                Sys_Role.Create();
+                Sys_Role.F_Category = 2;
+                _repository.Insert(Sys_Role);
             }
         }
     }

@@ -6,7 +6,7 @@
 *********************************************************************************/
 using BH.Application.SystemManage;
 using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _moduleButtonApp.GetList(moduleId);
             var treeList = new List<TreeSelectModel>();
-            foreach (ModuleButtonEntity item in data)
+            foreach (Sys_ModuleButton item in data)
             {
                 TreeSelectModel treeModel = new TreeSelectModel();
                 treeModel.id = item.F_Id;
@@ -46,7 +46,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _moduleButtonApp.GetList(moduleId);
             var treeList = new List<TreeGridModel>();
-            foreach (ModuleButtonEntity item in data)
+            foreach (Sys_ModuleButton item in data)
             {
                 TreeGridModel treeModel = new TreeGridModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -69,9 +69,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(ModuleButtonEntity moduleButtonEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_ModuleButton Sys_ModuleButton, string keyValue)
         {
-            _moduleButtonApp.SubmitForm(moduleButtonEntity, keyValue);
+            _moduleButtonApp.SubmitForm(Sys_ModuleButton, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -94,7 +94,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
             var moduledata = _moduleApp.GetList();
             var buttondata = _moduleButtonApp.GetList();
             var treeList = new List<TreeViewModel>();
-            foreach (ModuleEntity item in moduledata)
+            foreach (Sys_Module item in moduledata)
             {
                 TreeViewModel tree = new TreeViewModel();
                 bool hasChildren = moduledata.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -107,7 +107,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
                 tree.hasChildren = true;
                 treeList.Add(tree);
             }
-            foreach (ModuleButtonEntity item in buttondata)
+            foreach (Sys_ModuleButton item in buttondata)
             {
                 TreeViewModel tree = new TreeViewModel();
                 bool hasChildren = buttondata.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;

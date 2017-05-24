@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class ModuleMap : EntityTypeConfiguration<ModuleEntity>
+    public class ModuleMap : EntityTypeConfiguration<Sys_Module>
     {
         public ModuleMap()
         {

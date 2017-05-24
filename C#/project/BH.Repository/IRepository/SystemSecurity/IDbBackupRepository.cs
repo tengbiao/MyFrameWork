@@ -1,17 +1,11 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Data;
-using BH.Domain.Entity.SystemSecurity;
+﻿using BH.Data;
+using BH.Domain.Entity;
 
-namespace BH.Repository.IRepository.SystemSecurity
+namespace BH.Repository.IRepository
 {
-    public interface IDbBackupRepository : IRepository<DbBackupEntity>
+    public interface IDbBackupRepository : IRepository<Sys_DbBackup>
     {
         void DeleteForm(string keyValue);
-        void ExecuteDbBackup(DbBackupEntity dbBackupEntity);
+        void ExecuteDbBackup(Sys_DbBackup Sys_DbBackup);
     }
 }

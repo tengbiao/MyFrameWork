@@ -1,5 +1,5 @@
 ﻿using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _moduleApp.GetList();
             var treeList = new List<TreeSelectModel>();
-            foreach (ModuleEntity item in data)
+            foreach (Sys_Module item in data)
             {
                 TreeSelectModel treeModel = new TreeSelectModel();
                 treeModel.id = item.F_Id;
@@ -41,7 +41,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
                 data = data.TreeWhere(t => t.F_FullName.Contains(keyword));
             }
             var treeList = new List<TreeGridModel>();
-            foreach (ModuleEntity item in data)
+            foreach (Sys_Module item in data)
             {
                 TreeGridModel treeModel = new TreeGridModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -64,9 +64,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(ModuleEntity moduleEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_Module Sys_Module, string keyValue)
         {
-            _moduleApp.SubmitForm(moduleEntity, keyValue);
+            _moduleApp.SubmitForm(Sys_Module, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

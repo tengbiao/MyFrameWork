@@ -1,5 +1,5 @@
 ﻿using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Linq;
 using System.Web.Mvc;
@@ -38,9 +38,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(RoleEntity roleEntity, string permissionIds, string keyValue)
+        public ActionResult SubmitForm(Sys_Role Sys_Role, string permissionIds, string keyValue)
         {
-            roleApp.SubmitForm(roleEntity, permissionIds.Split(','), keyValue);
+            roleApp.SubmitForm(Sys_Role, permissionIds.Split(','), keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

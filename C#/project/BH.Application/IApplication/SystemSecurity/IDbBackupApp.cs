@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using BH.Domain.Entity.SystemSecurity;
+﻿using BH.Domain.Entity;
+using System.Collections.Generic;
 
 namespace BH.IApplication
 {
     public interface IDbBackupApp
     {
         void DeleteForm(string keyValue);
-        DbBackupEntity GetForm(string keyValue);
-        List<DbBackupEntity> GetList(string queryJson);
-        void SubmitForm(DbBackupEntity dbBackupEntity);
+        Sys_DbBackup GetForm(string keyValue);
+        List<Sys_DbBackup> GetList(string queryJson);
+        void SubmitForm(Sys_DbBackup Sys_DbBackup);
     }
 }

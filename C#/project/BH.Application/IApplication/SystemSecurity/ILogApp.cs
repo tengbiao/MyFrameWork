@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using BH.Code;
-using BH.Domain.Entity.SystemSecurity;
+using BH.Domain.Entity;
 
 namespace BH.IApplication
 {
     public interface ILogApp
     {
-        List<LogEntity> GetList(Pagination pagination, string queryJson);
+        List<Sys_Log> GetList(Pagination pagination, string queryJson);
         void RemoveLog(string keepTime);
         void WriteDbLog(bool result, string resultLog);
-        void WriteDbLog(LogEntity logEntity);
+        void WriteDbLog(Sys_Log Sys_Log);
     }
 }

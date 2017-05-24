@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class OrganizeMap : EntityTypeConfiguration<OrganizeEntity>
+    public class OrganizeMap : EntityTypeConfiguration<Sys_Organize>
     {
         public OrganizeMap()
         {

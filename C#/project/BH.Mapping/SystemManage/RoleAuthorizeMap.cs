@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class RoleAuthorizeMap : EntityTypeConfiguration<RoleAuthorizeEntity>
+    public class RoleAuthorizeMap : EntityTypeConfiguration<Sys_RoleAuthorize>
     {
         public RoleAuthorizeMap()
         {

@@ -1,12 +1,6 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemSecurity;
+﻿using BH.Application.SystemSecurity;
 using BH.Code;
-using BH.Domain.Entity.SystemSecurity;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Web.Mvc;
 
@@ -30,11 +24,11 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(DbBackupEntity dbBackupEntity)
+        public ActionResult SubmitForm(Sys_DbBackup Sys_DbBackup)
         {
-            dbBackupEntity.F_FilePath = Server.MapPath("~/Resource/DbBackup/" + dbBackupEntity.F_FileName + ".bak");
-            dbBackupEntity.F_FileName = dbBackupEntity.F_FileName + ".bak";
-            _dbBackupApp.SubmitForm(dbBackupEntity);
+            Sys_DbBackup.F_FilePath = Server.MapPath("~/Resource/DbBackup/" + Sys_DbBackup.F_FileName + ".bak");
+            Sys_DbBackup.F_FileName = Sys_DbBackup.F_FileName + ".bak";
+            _dbBackupApp.SubmitForm(Sys_DbBackup);
             return Success("操作成功。");
         }
         [HttpPost]

@@ -1,6 +1,6 @@
 ﻿using BH.Code;
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System;
 using System.Collections.Generic;
@@ -9,17 +9,17 @@ namespace BH.Application.SystemManage
 {
     public class UserApp : IUserApp
     {
-        private readonly IRepository<UserEntity> _repository;
-        private readonly IRepository<UserLogOnEntity> _userLogOnRepository;
-        public UserApp(IRepository<UserEntity> repository, IRepository<UserLogOnEntity> userLogOnEntityRepository)
+        private readonly IRepository<Sys_User> _repository;
+        private readonly IRepository<Sys_UserLogOn> _userLogOnRepository;
+        public UserApp(IRepository<Sys_User> repository, IRepository<Sys_UserLogOn> Sys_UserLogOnRepository)
         {
             _repository = repository;
-            _userLogOnRepository = userLogOnEntityRepository;
+            _userLogOnRepository = Sys_UserLogOnRepository;
         }
 
-        public List<UserEntity> GetList(Pagination pagination, string keyword)
+        public List<Sys_User> GetList(Pagination pagination, string keyword)
         {
-            var expression = ExtLinq.True<UserEntity>();
+            var expression = ExtLinq.True<Sys_User>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 expression = expression.And(t => t.F_Account.Contains(keyword));
@@ -29,7 +29,7 @@ namespace BH.Application.SystemManage
             expression = expression.And(t => t.F_Account != "admin");
             return _repository.FindList(expression, pagination);
         }
-        public UserEntity GetForm(string keyValue)
+        public Sys_User GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -41,59 +41,59 @@ namespace BH.Application.SystemManage
             _userLogOnRepository.Delete(t => t.F_UserId == keyValue);
             _repository.SaveChanges(true);
         }
-        public void SubmitForm(UserEntity userEntity, UserLogOnEntity userLogOnEntity, string keyValue)
+        public void SubmitForm(Sys_User Sys_User, Sys_UserLogOn Sys_UserLogOn, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                userEntity.Modify(keyValue);
+                Sys_User.Modify(keyValue);
             }
             else
             {
-                userEntity.Create();
+                Sys_User.Create();
             }
 
             _repository.LazySaveChanges();
             _userLogOnRepository.LazySaveChanges();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                _repository.Update(userEntity);
+                _repository.Update(Sys_User);
             }
             else
             {
-                userLogOnEntity.F_Id = userEntity.F_Id;
-                userLogOnEntity.F_UserId = userEntity.F_Id;
-                userLogOnEntity.F_UserSecretkey = Md5.md5(Common.CreateNo(), 16).ToLower();
-                userLogOnEntity.F_UserPassword = Md5.md5(DESEncrypt.Encrypt(Md5.md5(userLogOnEntity.F_UserPassword, 32).ToLower(), userLogOnEntity.F_UserSecretkey).ToLower(), 32).ToLower();
-                _repository.Insert(userEntity);
-                _userLogOnRepository.Insert(userLogOnEntity);
+                Sys_UserLogOn.F_Id = Sys_User.F_Id;
+                Sys_UserLogOn.F_UserId = Sys_User.F_Id;
+                Sys_UserLogOn.F_UserSecretkey = Md5.md5(Common.CreateNo(), 16).ToLower();
+                Sys_UserLogOn.F_UserPassword = Md5.md5(DESEncrypt.Encrypt(Md5.md5(Sys_UserLogOn.F_UserPassword, 32).ToLower(), Sys_UserLogOn.F_UserSecretkey).ToLower(), 32).ToLower();
+                _repository.Insert(Sys_User);
+                _userLogOnRepository.Insert(Sys_UserLogOn);
             }
             _repository.SaveChanges(true);
         }
-        public void UpdateForm(UserEntity userEntity)
+        public void UpdateForm(Sys_User Sys_User)
         {
-            _repository.Update(userEntity);
+            _repository.Update(Sys_User);
         }
-        public UserEntity CheckLogin(string username, string password)
+        public Sys_User CheckLogin(string username, string password)
         {
-            UserEntity userEntity = _repository.FindEntity(t => t.F_Account == username);
-            if (userEntity != null)
+            Sys_User Sys_User = _repository.FindEntity(t => t.F_Account == username);
+            if (Sys_User != null)
             {
-                if (userEntity.F_EnabledMark == true)
+                if (Sys_User.F_EnabledMark == true)
                 {
-                    UserLogOnEntity userLogOnEntity = _userLogOnRepository.FindKey(userEntity.F_Id);
-                    string dbPassword = Md5.md5(DESEncrypt.Encrypt(password.ToLower(), userLogOnEntity.F_UserSecretkey).ToLower(), 32).ToLower();
-                    if (dbPassword == userLogOnEntity.F_UserPassword)
+                    Sys_UserLogOn Sys_UserLogOn = _userLogOnRepository.FindKey(Sys_User.F_Id);
+                    string dbPassword = Md5.md5(DESEncrypt.Encrypt(password.ToLower(), Sys_UserLogOn.F_UserSecretkey).ToLower(), 32).ToLower();
+                    if (dbPassword == Sys_UserLogOn.F_UserPassword)
                     {
                         DateTime lastVisitTime = DateTime.Now;
-                        int LogOnCount = (userLogOnEntity.F_LogOnCount).ToInt() + 1;
-                        if (userLogOnEntity.F_LastVisitTime != null)
+                        int LogOnCount = (Sys_UserLogOn.F_LogOnCount).ToInt() + 1;
+                        if (Sys_UserLogOn.F_LastVisitTime != null)
                         {
-                            userLogOnEntity.F_PreviousVisitTime = userLogOnEntity.F_LastVisitTime.ToDate();
+                            Sys_UserLogOn.F_PreviousVisitTime = Sys_UserLogOn.F_LastVisitTime.ToDate();
                         }
-                        userLogOnEntity.F_LastVisitTime = lastVisitTime;
-                        userLogOnEntity.F_LogOnCount = LogOnCount;
-                        _userLogOnRepository.Update(userLogOnEntity);
-                        return userEntity;
+                        Sys_UserLogOn.F_LastVisitTime = lastVisitTime;
+                        Sys_UserLogOn.F_LogOnCount = LogOnCount;
+                        _userLogOnRepository.Update(Sys_UserLogOn);
+                        return Sys_User;
                     }
                     else
                     {

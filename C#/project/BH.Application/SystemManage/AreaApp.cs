@@ -1,6 +1,6 @@
 ﻿using BH.Application.IApplication;
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +10,19 @@ namespace BH.Application.SystemManage
 {
     public class AreaApp : IAreaApp
     {
-        private IRepository<AreaEntity> _repository;
-        public AreaApp(IRepository<AreaEntity> service)
+        private IRepository<Sys_Area> _repository;
+        public AreaApp(IRepository<Sys_Area> service)
         {
             this._repository = service;
         }
 
-        public List<AreaEntity> GetList()
+        public List<Sys_Area> GetList()
         {
             var result = _repository.IQueryable().ToList();
             return result;
         }
 
-        public async Task<AreaEntity> GetForm(string keyValue)
+        public async Task<Sys_Area> GetForm(string keyValue)
         {
             return await _repository.FindKeyAsync(keyValue);
         }
@@ -39,7 +39,7 @@ namespace BH.Application.SystemManage
             }
         }
 
-        public void SubmitForm(AreaEntity areaEntity, string keyValue)
+        public void SubmitForm(Sys_Area areaEntity, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {

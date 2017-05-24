@@ -659,10 +659,6 @@
       <Project>{7dc886cd-b8a0-44e8-aadd-57fcb0cfecb8}</Project>
       <Name>BH.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BH.Mapping\BH.Mapping.csproj">
-      <Project>{4e642cbe-f6c5-4cb9-9474-6b349652fe77}</Project>
-      <Name>BH.Mapping</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BH.Repository\BH.Repository.csproj">
       <Project>{875233BF-EA15-49E0-9A9C-77884A897FF6}</Project>
       <Name>BH.Repository</Name>

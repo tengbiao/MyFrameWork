@@ -1,5 +1,5 @@
 ﻿using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.Domain.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -11,26 +11,26 @@ namespace BH.Application.SystemManage
 {
     public class RoleAuthorizeApp : IRoleAuthorizeApp
     {
-        private readonly IRepository<RoleAuthorizeEntity> _repository;
-        private readonly IRepository<ModuleEntity> _moduleRepository;
-        private readonly IRepository<ModuleButtonEntity> _moduleButtonRepository;
+        private readonly IRepository<Sys_RoleAuthorize> _repository;
+        private readonly IRepository<Sys_Module> _moduleRepository;
+        private readonly IRepository<Sys_ModuleButton> _moduleButtonRepository;
 
-        public RoleAuthorizeApp(IRepository<RoleAuthorizeEntity> repository,
-            IRepository<ModuleEntity> moduleRepository,
-            IRepository<ModuleButtonEntity> moduleButtonRepository)
+        public RoleAuthorizeApp(IRepository<Sys_RoleAuthorize> repository,
+            IRepository<Sys_Module> moduleRepository,
+            IRepository<Sys_ModuleButton> moduleButtonRepository)
         {
             _repository = repository;
             _moduleRepository = moduleRepository;
             _moduleButtonRepository = moduleButtonRepository;
         }
 
-        public List<RoleAuthorizeEntity> GetList(string ObjectId)
+        public List<Sys_RoleAuthorize> GetList(string ObjectId)
         {
             return _repository.IQueryable(t => t.F_ObjectId == ObjectId).ToList();
         }
-        public List<ModuleEntity> GetMenuList(string roleId)
+        public List<Sys_Module> GetMenuList(string roleId)
         {
-            var data = new List<ModuleEntity>();
+            var data = new List<Sys_Module>();
             if (OperatorProvider.Provider.GetCurrent().IsSystem)
             {
                 data = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
@@ -41,18 +41,18 @@ namespace BH.Application.SystemManage
                 var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 1).ToList();
                 foreach (var item in authorizedata)
                 {
-                    ModuleEntity moduleEntity = moduledata.Find(t => t.F_Id == item.F_ItemId);
-                    if (moduleEntity != null)
+                    Sys_Module Sys_Module = moduledata.Find(t => t.F_Id == item.F_ItemId);
+                    if (Sys_Module != null)
                     {
-                        data.Add(moduleEntity);
+                        data.Add(Sys_Module);
                     }
                 }
             }
             return data.OrderBy(t => t.F_SortCode).ToList();
         }
-        public List<ModuleButtonEntity> GetButtonList(string roleId)
+        public List<Sys_ModuleButton> GetButtonList(string roleId)
         {
-            var data = new List<ModuleButtonEntity>();
+            var data = new List<Sys_ModuleButton>();
             if (OperatorProvider.Provider.GetCurrent().IsSystem)
             {
                 data = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
@@ -63,10 +63,10 @@ namespace BH.Application.SystemManage
                 var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 2).ToList();
                 foreach (var item in authorizedata)
                 {
-                    ModuleButtonEntity moduleButtonEntity = buttondata.Find(t => t.F_Id == item.F_ItemId);
-                    if (moduleButtonEntity != null)
+                    Sys_ModuleButton Sys_ModuleButton = buttondata.Find(t => t.F_Id == item.F_ItemId);
+                    if (Sys_ModuleButton != null)
                     {
-                        data.Add(moduleButtonEntity);
+                        data.Add(Sys_ModuleButton);
                     }
                 }
             }

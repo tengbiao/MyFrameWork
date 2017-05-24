@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 
 namespace BH.IApplication
 {
     public interface IModuleApp
     {
         void DeleteForm(string keyValue);
-        ModuleEntity GetForm(string keyValue);
-        List<ModuleEntity> GetList();
-        void SubmitForm(ModuleEntity moduleEntity, string keyValue);
+        Sys_Module GetForm(string keyValue);
+        List<Sys_Module> GetList();
+        void SubmitForm(Sys_Module Sys_Module, string keyValue);
     }
 }

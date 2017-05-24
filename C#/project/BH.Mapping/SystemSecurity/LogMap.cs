@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemSecurity
 {
-    public class LogMap : EntityTypeConfiguration<LogEntity>
+    public class LogMap : EntityTypeConfiguration<Sys_Log>
     {
         public LogMap()
         {

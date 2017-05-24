@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class RoleMap : EntityTypeConfiguration<RoleEntity>
+    public class RoleMap : EntityTypeConfiguration<Sys_Role>
     {
         public RoleMap()
         {

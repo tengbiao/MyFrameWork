@@ -1,15 +1,9 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Domain.Infrastructure;
+﻿using BH.Domain.Infrastructure;
 using System;
 
-namespace BH.Domain.Entity.SystemManage
+namespace BH.Domain.Entity
 {
-    public class ItemsDetailEntity : FullAudited
+    public class Sys_ItemsDetail : FullAudited
     {
         public string F_ItemId { get; set; }
         public string F_ParentId { get; set; }

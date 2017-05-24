@@ -1,39 +1,31 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
 using BH.Data;
-using BH.Data.Extensions;
-using BH.Domain.Entity.SystemSecurity;
-using BH.Repository.IRepository.SystemSecurity;
-using BH.Repository.SystemSecurity;
+using BH.Domain.Entity;
+using BH.Repository.IRepository;
 
 namespace BH.Repository.SystemSecurity
 {
-    public class DbBackupRepository : Repository<DbBackupEntity>, IDbBackupRepository
+    public class DbBackupRepository : Repository<Sys_DbBackup>, IDbBackupRepository
     {
         public void DeleteForm(string keyValue)
         {
             using (var scope = new System.Transactions.TransactionScope())
             {
-                var dbBackupEntity = FindKey(keyValue);
-                if (dbBackupEntity != null)
+                var Sys_DbBackup = FindKey(keyValue);
+                if (Sys_DbBackup != null)
                 {
-                    FileHelper.DeleteFile(dbBackupEntity.F_FilePath);
+                    FileHelper.DeleteFile(Sys_DbBackup.F_FilePath);
                 }
-                Delete(dbBackupEntity);
+                Delete(Sys_DbBackup);
                 scope.Complete();
             }
         }
-        public async void ExecuteDbBackup(DbBackupEntity dbBackupEntity)
+        public async void ExecuteDbBackup(Sys_DbBackup Sys_DbBackup)
         {
-            await ExecuteSqlCommandAsync(string.Format("backup database {0} to disk ='{1}'", dbBackupEntity.F_DbName, dbBackupEntity.F_FilePath));
-            dbBackupEntity.F_FileSize = FileHelper.ToFileSize(FileHelper.GetFileSize(dbBackupEntity.F_FilePath));
-            dbBackupEntity.F_FilePath = "/Resource/DbBackup/" + dbBackupEntity.F_FileName;
-            await InsertAsync(dbBackupEntity);
+            await ExecuteSqlCommandAsync(string.Format("backup database {0} to disk ='{1}'", Sys_DbBackup.F_DbName, Sys_DbBackup.F_FilePath));
+            Sys_DbBackup.F_FileSize = FileHelper.ToFileSize(FileHelper.GetFileSize(Sys_DbBackup.F_FilePath));
+            Sys_DbBackup.F_FilePath = "/Resource/DbBackup/" + Sys_DbBackup.F_FileName;
+            await InsertAsync(Sys_DbBackup);
         }
     }
 }

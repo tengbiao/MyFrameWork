@@ -1,11 +1,11 @@
-﻿using BH.Domain.Entity.SystemManage;
+﻿using BH.Domain.Entity;
 
 namespace BH.IApplication
 {
     public interface IUserLogOnApp
     {
-        UserLogOnEntity GetForm(string keyValue);
+        Sys_UserLogOn GetForm(string keyValue);
         void RevisePassword(string userPassword, string keyValue);
-        void UpdateForm(UserLogOnEntity userLogOnEntity);
+        void UpdateForm(Sys_UserLogOn Sys_UserLogOn);
     }
 }

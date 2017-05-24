@@ -8,7 +8,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemSecurity
 {
-    public class FilterIPMap : EntityTypeConfiguration<FilterIPEntity>
+    public class FilterIPMap : EntityTypeConfiguration<Sys_FilterIP>
     {
         public FilterIPMap()
         {

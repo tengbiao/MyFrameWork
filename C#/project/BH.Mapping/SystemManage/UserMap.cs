@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class UserMap : EntityTypeConfiguration<UserEntity>
+    public class UserMap : EntityTypeConfiguration<Sys_User>
     {
         public UserMap()
         {

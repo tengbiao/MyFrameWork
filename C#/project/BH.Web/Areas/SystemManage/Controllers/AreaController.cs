@@ -1,6 +1,6 @@
 ﻿using BH.Application.IApplication;
 using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = areaApp.GetList();
             var treeList = new List<TreeSelectModel>();
-            foreach (AreaEntity item in data)
+            foreach (Sys_Area item in data)
             {
                 TreeSelectModel treeModel = new TreeSelectModel();
                 treeModel.id = item.F_Id;
@@ -39,7 +39,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = areaApp.GetList();
             var treeList = new List<TreeGridModel>();
-            foreach (AreaEntity item in data)
+            foreach (Sys_Area item in data)
             {
                 TreeGridModel treeModel = new TreeGridModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -69,7 +69,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(AreaEntity areaEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_Area areaEntity, string keyValue)
         {
             areaApp.SubmitForm(areaEntity, keyValue);
             return Success("操作成功。");

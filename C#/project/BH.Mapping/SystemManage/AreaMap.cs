@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class AreaMap : EntityTypeConfiguration<AreaEntity>
+    public class AreaMap : EntityTypeConfiguration<Sys_Area>
     {
         public AreaMap()
         {

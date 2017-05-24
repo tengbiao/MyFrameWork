@@ -1,16 +1,10 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
-using System.Data.SqlClient;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -150,6 +144,11 @@ namespace BH.Data
             }
             int result = await SaveChangesAsync();
             return result > 0 ? entity : null;
+        }
+
+        public void AddOrUpdate(params TEntity[] entitys)
+        {
+            Table.AddOrUpdate(entitys);
         }
 
         public int Delete(TEntity entity)

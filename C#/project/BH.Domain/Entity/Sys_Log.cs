@@ -1,15 +1,9 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Domain.Infrastructure;
+﻿using BH.Domain.Infrastructure;
 using System;
 
-namespace BH.Domain.Entity.SystemSecurity
+namespace BH.Domain.Entity
 {
-    public class LogEntity : CreationAudited
+    public class Sys_Log : CreationAudited
     {
         public DateTime? F_Date { get; set; }
         public string F_Account { get; set; }

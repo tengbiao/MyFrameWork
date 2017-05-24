@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class ItemsDetailMap : EntityTypeConfiguration<ItemsDetailEntity>
+    public class ItemsDetailMap : EntityTypeConfiguration<Sys_ItemsDetail>
     {
         public ItemsDetailMap()
         {

@@ -1,6 +1,6 @@
 ﻿using BH.Code;
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System;
 using System.Collections.Generic;
@@ -10,16 +10,16 @@ namespace BH.Application.SystemManage
 {
     public class ModuleApp : IModuleApp
     {
-        private readonly IRepository<ModuleEntity> _repository;
-        public ModuleApp(IRepository<ModuleEntity> repository)
+        private readonly IRepository<Sys_Module> _repository;
+        public ModuleApp(IRepository<Sys_Module> repository)
         {
             _repository = repository;
         }
-        public List<ModuleEntity> GetList()
+        public List<Sys_Module> GetList()
         {
             return _repository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
         }
-        public ModuleEntity GetForm(string keyValue)
+        public Sys_Module GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -34,17 +34,17 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(ModuleEntity moduleEntity, string keyValue)
+        public void SubmitForm(Sys_Module Sys_Module, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                moduleEntity.Modify(keyValue);
-                _repository.Update(moduleEntity);
+                Sys_Module.Modify(keyValue);
+                _repository.Update(Sys_Module);
             }
             else
             {
-                moduleEntity.Create();
-                _repository.Insert(moduleEntity);
+                Sys_Module.Create();
+                _repository.Insert(Sys_Module);
             }
         }
     }

@@ -5,7 +5,7 @@
  * Website：http://www.BH.cn
 *********************************************************************************/
 using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System;
 using System.Collections.Generic;
@@ -15,17 +15,17 @@ namespace BH.Application.SystemManage
 {
     public class OrganizeApp : IOrganizeApp
     {
-        private readonly IRepository<OrganizeEntity> _repository;
-        public OrganizeApp(IRepository<OrganizeEntity> repository)
+        private readonly IRepository<Sys_Organize> _repository;
+        public OrganizeApp(IRepository<Sys_Organize> repository)
         {
             _repository = repository;
         }
 
-        public List<OrganizeEntity> GetList()
+        public List<Sys_Organize> GetList()
         {
             return _repository.IQueryable().OrderBy(t => t.F_CreatorTime).ToList();
         }
-        public OrganizeEntity GetForm(string keyValue)
+        public Sys_Organize GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -40,17 +40,17 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(OrganizeEntity organizeEntity, string keyValue)
+        public void SubmitForm(Sys_Organize Sys_Organize, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                organizeEntity.Modify(keyValue);
-                _repository.Update(organizeEntity);
+                Sys_Organize.Modify(keyValue);
+                _repository.Update(Sys_Organize);
             }
             else
             {
-                organizeEntity.Create();
-                _repository.Insert(organizeEntity);
+                Sys_Organize.Create();
+                _repository.Insert(Sys_Organize);
             }
         }
     }

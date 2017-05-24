@@ -1,5 +1,5 @@
 ﻿using BH.Data;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System;
 using System.Collections.Generic;
@@ -9,16 +9,16 @@ namespace BH.Application.SystemManage
 {
     public class ItemsApp : IItemsApp
     {
-        private readonly IRepository<ItemsEntity> _repository;
-        public ItemsApp(IRepository<ItemsEntity> repository)
+        private readonly IRepository<Sys_Items> _repository;
+        public ItemsApp(IRepository<Sys_Items> repository)
         {
             _repository = repository;
         }
-        public List<ItemsEntity> GetList()
+        public List<Sys_Items> GetList()
         {
             return _repository.IQueryable().ToList();
         }
-        public ItemsEntity GetForm(string keyValue)
+        public Sys_Items GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -33,17 +33,17 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(ItemsEntity itemsEntity, string keyValue)
+        public void SubmitForm(Sys_Items Sys_Items, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                itemsEntity.Modify(keyValue);
-                _repository.Update(itemsEntity);
+                Sys_Items.Modify(keyValue);
+                _repository.Update(Sys_Items);
             }
             else
             {
-                itemsEntity.Create();
-                _repository.Insert(itemsEntity);
+                Sys_Items.Create();
+                _repository.Insert(Sys_Items);
             }
         }
     }

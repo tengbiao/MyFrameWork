@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 
 namespace BH.IApplication
 {
     public interface IModuleButtonApp
     {
         void DeleteForm(string keyValue);
-        ModuleButtonEntity GetForm(string keyValue);
-        List<ModuleButtonEntity> GetList(string moduleId = "");
+        Sys_ModuleButton GetForm(string keyValue);
+        List<Sys_ModuleButton> GetList(string moduleId = "");
         void SubmitCloneButton(string moduleId, string Ids);
-        void SubmitForm(ModuleButtonEntity moduleButtonEntity, string keyValue);
+        void SubmitForm(Sys_ModuleButton Sys_ModuleButton, string keyValue);
     }
 }

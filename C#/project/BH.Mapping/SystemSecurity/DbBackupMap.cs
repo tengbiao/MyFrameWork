@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemSecurity
 {
-    public class DbBackupMap : EntityTypeConfiguration<DbBackupEntity>
+    public class DbBackupMap : EntityTypeConfiguration<Sys_DbBackup>
     {
         public DbBackupMap()
         {

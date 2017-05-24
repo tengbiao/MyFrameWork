@@ -1,7 +1,7 @@
 ﻿using BH.Code;
-using BH.Domain.Entity.SystemSecurity;
+using BH.Domain.Entity;
 using BH.IApplication;
-using BH.Repository.IRepository.SystemSecurity;
+using BH.Repository.IRepository;
 using BH.Repository.SystemSecurity;
 using System;
 using System.Collections.Generic;
@@ -13,9 +13,9 @@ namespace BH.Application.SystemSecurity
     {
         private IDbBackupRepository service = new DbBackupRepository();
 
-        public List<DbBackupEntity> GetList(string queryJson)
+        public List<Sys_DbBackup> GetList(string queryJson)
         {
-            var expression = ExtLinq.True<DbBackupEntity>();
+            var expression = ExtLinq.True<Sys_DbBackup>();
             var queryParam = queryJson.ToJObject();
             if (!queryParam["condition"].IsEmpty() && !queryParam["keyword"].IsEmpty())
             {
@@ -33,7 +33,7 @@ namespace BH.Application.SystemSecurity
             }
             return service.IQueryable(expression).OrderByDescending(t => t.F_BackupTime).ToList();
         }
-        public DbBackupEntity GetForm(string keyValue)
+        public Sys_DbBackup GetForm(string keyValue)
         {
             return service.FindKey(keyValue);
         }
@@ -41,12 +41,12 @@ namespace BH.Application.SystemSecurity
         {
             service.DeleteForm(keyValue);
         }
-        public void SubmitForm(DbBackupEntity dbBackupEntity)
+        public void SubmitForm(Sys_DbBackup Sys_DbBackup)
         {
-            dbBackupEntity.F_Id = Common.GuId();
-            dbBackupEntity.F_EnabledMark = true;
-            dbBackupEntity.F_BackupTime = DateTime.Now;
-            service.ExecuteDbBackup(dbBackupEntity);
+            Sys_DbBackup.F_Id = Common.GuId();
+            Sys_DbBackup.F_EnabledMark = true;
+            Sys_DbBackup.F_BackupTime = DateTime.Now;
+            service.ExecuteDbBackup(Sys_DbBackup);
         }
     }
 }

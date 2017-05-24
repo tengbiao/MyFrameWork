@@ -50,38 +50,34 @@
     <Compile Include="Infrastructure\IEntityBase.cs" />
     <Compile Include="Infrastructure\ModificationAudited.cs" />
     <Compile Include="Infrastructure\IModificationAudited.cs" />
-    <Compile Include="Entity\SystemManage\AreaEntity.cs" />
-    <Compile Include="Entity\SystemManage\ModuleButtonEntity.cs" />
-    <Compile Include="Entity\SystemManage\ModuleEntity.cs" />
-    <Compile Include="Entity\SystemManage\RoleAuthorizeEntity.cs" />
-    <Compile Include="Entity\SystemManage\UserLogOnEntity.cs" />
-    <Compile Include="Entity\SystemManage\ItemsDetailEntity.cs" />
-    <Compile Include="Entity\SystemSecurity\DbBackupEntity.cs" />
-    <Compile Include="Entity\SystemSecurity\FilterIPEntity.cs" />
-    <Compile Include="Entity\SystemSecurity\LogEntity.cs" />
+    <Compile Include="Entity\Sys_Area.cs" />
+    <Compile Include="Entity\Sys_ModuleButton.cs" />
+    <Compile Include="Entity\Sys_Module.cs" />
+    <Compile Include="Entity\Sys_RoleAuthorize.cs" />
+    <Compile Include="Entity\Sys_UserLogOn.cs" />
+    <Compile Include="Entity\Sys_ItemsDetail.cs" />
+    <Compile Include="Entity\Sys_DbBackup.cs" />
+    <Compile Include="Entity\Sys_FilterIP.cs" />
+    <Compile Include="Entity\Sys_Log.cs" />
     <Compile Include="ViewModel\AuthorizeActionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity\SystemManage\ItemsEntity.cs" />
+    <Compile Include="Entity\Sys_Items.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity\SystemManage\OrganizeEntity.cs" />
+    <Compile Include="Entity\Sys_Organize.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity\SystemManage\RoleEntity.cs" />
+    <Compile Include="Entity\Sys_Role.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entity\SystemManage\UserEntity.cs" />
+    <Compile Include="Entity\Sys_User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BH.Code\BH.Code.csproj">
       <Project>{db19ce03-c307-43fe-a209-08aa4ae10e21}</Project>
       <Name>BH.Code</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BH.Data\BH.Data.csproj">
-      <Project>{f71003e8-a836-48f4-9df6-df9095cebd18}</Project>
-      <Name>BH.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

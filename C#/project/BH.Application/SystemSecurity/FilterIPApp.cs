@@ -1,9 +1,7 @@
 ﻿using BH.Code;
 using BH.Data;
-using BH.Domain.Entity.SystemSecurity;
+using BH.Domain.Entity;
 using BH.IApplication;
-using BH.Repository.IRepository.SystemSecurity;
-using BH.Repository.SystemSecurity;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,22 +9,22 @@ namespace BH.Application.SystemSecurity
 {
     public class FilterIPApp : IFilterIPApp
     {
-        private readonly IRepository<FilterIPEntity> _repository;
-        public FilterIPApp(IRepository<FilterIPEntity> repository)
+        private readonly IRepository<Sys_FilterIP> _repository;
+        public FilterIPApp(IRepository<Sys_FilterIP> repository)
         {
             this._repository = repository;
         }
 
-        public List<FilterIPEntity> GetList(string keyword)
+        public List<Sys_FilterIP> GetList(string keyword)
         {
-            var expression = ExtLinq.True<FilterIPEntity>();
+            var expression = ExtLinq.True<Sys_FilterIP>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 expression = expression.And(t => t.F_StartIP.Contains(keyword));
             }
             return _repository.IQueryable(expression).OrderByDescending(t => t.F_DeleteTime).ToList();
         }
-        public FilterIPEntity GetForm(string keyValue)
+        public Sys_FilterIP GetForm(string keyValue)
         {
             return _repository.FindKey(keyValue);
         }
@@ -34,17 +32,17 @@ namespace BH.Application.SystemSecurity
         {
             _repository.Delete(t => t.F_Id == keyValue);
         }
-        public void SubmitForm(FilterIPEntity filterIPEntity, string keyValue)
+        public void SubmitForm(Sys_FilterIP Sys_FilterIP, string keyValue)
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
-                filterIPEntity.Modify(keyValue);
-                _repository.Update(filterIPEntity);
+                Sys_FilterIP.Modify(keyValue);
+                _repository.Update(Sys_FilterIP);
             }
             else
             {
-                filterIPEntity.Create();
-                _repository.Insert(filterIPEntity);
+                Sys_FilterIP.Create();
+                _repository.Insert(Sys_FilterIP);
             }
         }
     }

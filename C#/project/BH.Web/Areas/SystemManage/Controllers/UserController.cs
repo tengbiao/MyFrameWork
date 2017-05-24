@@ -1,12 +1,6 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
+﻿using BH.Application.SystemManage;
 using BH.Code;
-using BH.Domain.Entity.SystemManage;
+using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,9 +42,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(UserEntity userEntity, UserLogOnEntity userLogOnEntity, string keyValue)
+        public ActionResult SubmitForm(Sys_User Sys_User, Sys_UserLogOn Sys_UserLogOn, string keyValue)
         {
-            _userApp.SubmitForm(userEntity, userLogOnEntity, keyValue);
+            _userApp.SubmitForm(Sys_User, Sys_UserLogOn, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
@@ -82,10 +76,10 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DisabledAccount(string keyValue)
         {
-            UserEntity userEntity = new UserEntity();
-            userEntity.F_Id = keyValue;
-            userEntity.F_EnabledMark = false;
-            _userApp.UpdateForm(userEntity);
+            Sys_User Sys_User = new Sys_User();
+            Sys_User.F_Id = keyValue;
+            Sys_User.F_EnabledMark = false;
+            _userApp.UpdateForm(Sys_User);
             return Success("账户禁用成功。");
         }
         [HttpPost]
@@ -94,10 +88,10 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EnabledAccount(string keyValue)
         {
-            UserEntity userEntity = new UserEntity();
-            userEntity.F_Id = keyValue;
-            userEntity.F_EnabledMark = true;
-            _userApp.UpdateForm(userEntity);
+            Sys_User Sys_User = new Sys_User();
+            Sys_User.F_Id = keyValue;
+            Sys_User.F_EnabledMark = true;
+            _userApp.UpdateForm(Sys_User);
             return Success("账户启用成功。");
         }
 

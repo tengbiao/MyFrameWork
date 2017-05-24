@@ -9,7 +9,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace BH.Mapping.SystemManage
 {
-    public class UserLogOnMap : EntityTypeConfiguration<UserLogOnEntity>
+    public class UserLogOnMap : EntityTypeConfiguration<Sys_UserLogOn>
     {
         public UserLogOnMap()
         {

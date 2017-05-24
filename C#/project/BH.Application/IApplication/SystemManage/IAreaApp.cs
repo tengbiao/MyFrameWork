@@ -1,4 +1,4 @@
-﻿using BH.Domain.Entity.SystemManage;
+﻿using BH.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,9 @@ namespace BH.Application.IApplication
 {
     public interface IAreaApp
     {
-        List<AreaEntity> GetList();
-        Task<AreaEntity> GetForm(string keyValue);
+        List<Sys_Area> GetList();
+        Task<Sys_Area> GetForm(string keyValue);
         void DeleteForm(string keyValue);
-        void SubmitForm(AreaEntity areaEntity, string keyValue);
+        void SubmitForm(Sys_Area areaEntity, string keyValue);
     }
 }
