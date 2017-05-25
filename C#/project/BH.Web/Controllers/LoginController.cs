@@ -23,7 +23,6 @@ namespace BH.Web.Controllers
         [HttpGet]
         public virtual ActionResult Index()
         {
-            var test = string.Format("{0:E2}", 1);
             return View();
         }
         [HttpGet]
@@ -32,9 +31,9 @@ namespace BH.Web.Controllers
             return File(new VerifyCode().GetVerifyCode(), @"image/Gif");
         }
         [HttpGet]
-        public ActionResult OutLogin()
+        public async Task<ActionResult> OutLogin()
         {
-            _logApp.WriteDbLog(new LogDto
+            await _logApp.WriteDbLog(new LogDto
             {
                 F_ModuleName = "系统登录",
                 F_Type = DbLogType.Exit.ToString(),

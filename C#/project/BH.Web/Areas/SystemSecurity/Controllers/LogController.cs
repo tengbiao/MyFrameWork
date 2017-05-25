@@ -1,5 +1,6 @@
 ﻿using BH.Code;
 using BH.IApplication;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace BH.Web.Areas.SystemSecurity.Controllers
@@ -19,11 +20,11 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult GetGridJson(Pagination pagination, string queryJson)
+        public async Task<ActionResult> GetGridJson(Pagination pagination, string queryJson)
         {
             var data = new
             {
-                rows = logApp.GetList(pagination, queryJson),
+                rows = await logApp.GetList(pagination, queryJson),
                 total = pagination.total,
                 page = pagination.page,
                 records = pagination.records
@@ -34,9 +35,9 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         [HandlerAjaxOnly]
         [HandlerAuthorize]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitRemoveLog(string keepTime)
+        public async Task<ActionResult> SubmitRemoveLog(string keepTime)
         {
-            logApp.RemoveLog(keepTime);
+            await logApp.RemoveLog(keepTime);
             return Success("清空成功。");
         }
     }
