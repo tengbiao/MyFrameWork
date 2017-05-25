@@ -53,9 +53,9 @@
     <Compile Include="Extensions\EntityInterfaceExtensions.cs" />
     <Compile Include="Extensions\IDbContextRepository.cs" />
     <Compile Include="Extensions\DbContextRepository.cs" />
-    <Compile Include="Migrations\201705240614441_newDataBase.cs" />
-    <Compile Include="Migrations\201705240614441_newDataBase.Designer.cs">
-      <DependentUpon>201705240614441_newDataBase.cs</DependentUpon>
+    <Compile Include="Migrations\201705250549597_NewDataBase.cs" />
+    <Compile Include="Migrations\201705250549597_NewDataBase.Designer.cs">
+      <DependentUpon>201705250549597_NewDataBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repository\IRepository.cs" />
@@ -76,8 +76,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201705240614441_newDataBase.resx">
-      <DependentUpon>201705240614441_newDataBase.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201705250549597_NewDataBase.resx">
+      <DependentUpon>201705250549597_NewDataBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

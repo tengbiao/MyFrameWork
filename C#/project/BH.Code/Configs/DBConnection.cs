@@ -26,7 +26,7 @@ namespace BH.Code
                 string connection = System.Configuration.ConfigurationManager.ConnectionStrings["BHDbContext"].ConnectionString;
                 if (Encrypt == true)
                 {
-                    return DESEncrypt.Decrypt(connection);
+                    return Encryptor.DesDecrypt(connection);
                 }
                 else
                 {

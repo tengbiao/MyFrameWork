@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _itemsDetailApp.GetItemList(enCode);
             List<object> list = new List<object>();
-            foreach (Sys_ItemsDetail item in data)
+            foreach (var item in data)
             {
                 list.Add(new { id = item.F_ItemCode, text = item.F_ItemName });
             }
@@ -44,9 +45,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(Sys_ItemsDetail Sys_ItemsDetail, string keyValue)
+        public ActionResult SubmitForm(ItemsDetailDto itemsDetailInputDto, string keyValue)
         {
-            _itemsDetailApp.SubmitForm(Sys_ItemsDetail, keyValue);
+            _itemsDetailApp.SubmitForm(itemsDetailInputDto, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

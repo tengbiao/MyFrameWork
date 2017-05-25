@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -15,13 +16,13 @@ namespace BH.Application.SystemManage
         {
             _repository = repository;
         }
-        public List<Sys_Module> GetList()
+        public List<ModuleDto> GetList()
         {
-            return _repository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable().OrderBy(t => t.F_SortCode).MapToList<ModuleDto>();//.ToList().MapTo<List<ModuleDto>>();
         }
-        public Sys_Module GetForm(string keyValue)
+        public ModuleDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<ModuleDto>();
         }
         public void DeleteForm(string keyValue)
         {
@@ -34,17 +35,18 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(Sys_Module Sys_Module, string keyValue)
+        public void SubmitForm(ModuleDto moduleDto, string keyValue)
         {
+            var module = moduleDto.MapTo<Sys_Module>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_Module.Modify(keyValue);
-                _repository.Update(Sys_Module);
+                module.Modify(keyValue);
+                _repository.Update(module);
             }
             else
             {
-                Sys_Module.Create();
-                _repository.Insert(Sys_Module);
+                module.Create();
+                _repository.Insert(module);
             }
         }
     }

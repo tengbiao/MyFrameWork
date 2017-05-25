@@ -1,9 +1,11 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BH.Application.SystemSecurity
 {
@@ -15,7 +17,7 @@ namespace BH.Application.SystemSecurity
             this._repository = repository;
         }
 
-        public List<Sys_Log> GetList(Pagination pagination, string queryJson)
+        public async Task<List<LogDto>> GetList(Pagination pagination, string queryJson)
         {
             var expression = ExtLinq.True<Sys_Log>();
             var queryParam = queryJson.ToJObject();
@@ -47,9 +49,9 @@ namespace BH.Application.SystemSecurity
                 }
                 expression = expression.And(t => t.F_Date >= startTime && t.F_Date <= endTime);
             }
-            return _repository.FindList(expression, pagination);
+            return (await _repository.FindListAsync(expression, pagination)).MapToList<LogDto>();
         }
-        public void RemoveLog(string keepTime)
+        public async Task<int> RemoveLog(string keepTime)
         {
             DateTime operateTime = DateTime.Now;
             if (keepTime == "7")            //保留近一周
@@ -66,9 +68,9 @@ namespace BH.Application.SystemSecurity
             }
             var expression = ExtLinq.True<Sys_Log>();
             expression = expression.And(t => t.F_Date <= operateTime);
-            _repository.Delete(expression);
+            return await _repository.DeleteAsync(expression);
         }
-        public void WriteDbLog(bool result, string resultLog)
+        public async Task<int> WriteDbLog(bool result, string resultLog)
         {
             Sys_Log Sys_Log = new Sys_Log();
             Sys_Log.F_Id = Common.GuId();
@@ -80,16 +82,19 @@ namespace BH.Application.SystemSecurity
             Sys_Log.F_Result = result;
             Sys_Log.F_Description = resultLog;
             Sys_Log.Create();
-            _repository.Insert(Sys_Log);
+            await _repository.InsertAsync(Sys_Log);
+            return 1;
         }
-        public void WriteDbLog(Sys_Log Sys_Log)
+        public async Task<int> WriteDbLog(LogDto logInputDto)
         {
-            Sys_Log.F_Id = Common.GuId();
-            Sys_Log.F_Date = DateTime.Now;
-            Sys_Log.F_IPAddress = Net.Ip;
-            Sys_Log.F_IPAddressName = Net.GetLocation(Sys_Log.F_IPAddress);
-            Sys_Log.Create();
-            _repository.Insert(Sys_Log);
+            var model = logInputDto.MapTo<Sys_Log>();
+            model.F_Id = Common.GuId();
+            model.F_Date = DateTime.Now;
+            model.F_IPAddress = Net.Ip;
+            model.F_IPAddressName = Net.GetLocation(model.F_IPAddress);
+            model.Create();
+            await _repository.InsertAsync(model);
+            return 1;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
@@ -19,9 +20,9 @@ namespace BH.Web.Controllers
         private readonly IDutyApp _dutyApp;
 
         public ClientsDataController(IItemsApp itemsApp,
-            IItemsDetailApp itemsDetailApp, 
-            IOrganizeApp organizeApp, 
-            IRoleApp roleApp, 
+            IItemsDetailApp itemsDetailApp,
+            IOrganizeApp organizeApp,
+            IRoleApp roleApp,
             IRoleAuthorizeApp roleAuthorizeApp,
             IDutyApp dutyApp)
         {
@@ -69,7 +70,7 @@ namespace BH.Web.Controllers
         {
             var data = _organizeApp.GetList();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            foreach (Sys_Organize item in data)
+            foreach (var item in data)
             {
                 var fieldItem = new
                 {
@@ -84,7 +85,7 @@ namespace BH.Web.Controllers
         {
             var data = _roleApp.GetList();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            foreach (Sys_Role item in data)
+            foreach (var item in data)
             {
                 var fieldItem = new
                 {
@@ -99,7 +100,7 @@ namespace BH.Web.Controllers
         {
             var data = _dutyApp.GetList();
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            foreach (Sys_Role item in data)
+            foreach (var item in data)
             {
                 var fieldItem = new
                 {
@@ -115,11 +116,11 @@ namespace BH.Web.Controllers
             var roleId = OperatorProvider.Provider.GetCurrent().RoleId;
             return ToMenuJson(_roleAuthorizeApp.GetMenuList(roleId), "0");
         }
-        private string ToMenuJson(List<Sys_Module> data, string parentId)
+        private string ToMenuJson(List<ModuleDto> data, string parentId)
         {
             StringBuilder sbJson = new StringBuilder();
             sbJson.Append("[");
-            List<Sys_Module> entitys = data.FindAll(t => t.F_ParentId == parentId);
+            var entitys = data.FindAll(t => t.F_ParentId == parentId);
             if (entitys.Count > 0)
             {
                 foreach (var item in entitys)
@@ -137,9 +138,9 @@ namespace BH.Web.Controllers
         {
             var roleId = OperatorProvider.Provider.GetCurrent().RoleId;
             var data = _roleAuthorizeApp.GetButtonList(roleId);
-            var dataModuleId = data.Distinct(new ExtList<Sys_ModuleButton>("F_ModuleId"));
+            var dataModuleId = data.Distinct(new ExtList<ModuleButtonDto>("F_ModuleId"));
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            foreach (Sys_ModuleButton item in dataModuleId)
+            foreach (ModuleButtonDto item in dataModuleId)
             {
                 var buttonList = data.Where(t => t.F_ModuleId.Equals(item.F_ModuleId));
                 dictionary.Add(item.F_ModuleId, buttonList);

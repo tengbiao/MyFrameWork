@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
 using BH.Repository.IRepository;
@@ -13,7 +14,7 @@ namespace BH.Application.SystemSecurity
     {
         private IDbBackupRepository service = new DbBackupRepository();
 
-        public List<Sys_DbBackup> GetList(string queryJson)
+        public List<DbBackupDto> GetList(string queryJson)
         {
             var expression = ExtLinq.True<Sys_DbBackup>();
             var queryParam = queryJson.ToJObject();
@@ -23,7 +24,7 @@ namespace BH.Application.SystemSecurity
                 string keyword = queryParam["keyword"].ToString();
                 switch (condition)
                 {
-                    case "DbName":  
+                    case "DbName":
                         expression = expression.And(t => t.F_DbName.Contains(keyword));
                         break;
                     case "FileName":
@@ -31,22 +32,23 @@ namespace BH.Application.SystemSecurity
                         break;
                 }
             }
-            return service.IQueryable(expression).OrderByDescending(t => t.F_BackupTime).ToList();
+            return service.IQueryable(expression).OrderByDescending(t => t.F_BackupTime).MapToList<DbBackupDto>();
         }
-        public Sys_DbBackup GetForm(string keyValue)
+        public DbBackupDto GetForm(string keyValue)
         {
-            return service.FindKey(keyValue);
+            return service.FindKey(keyValue).MapTo<DbBackupDto>();
         }
         public void DeleteForm(string keyValue)
         {
             service.DeleteForm(keyValue);
         }
-        public void SubmitForm(Sys_DbBackup Sys_DbBackup)
+        public void SubmitForm(DbBackupDto dbBackupInputDto)
         {
-            Sys_DbBackup.F_Id = Common.GuId();
-            Sys_DbBackup.F_EnabledMark = true;
-            Sys_DbBackup.F_BackupTime = DateTime.Now;
-            service.ExecuteDbBackup(Sys_DbBackup);
+            var model = dbBackupInputDto.MapTo<Sys_DbBackup>();
+            model.F_Id = Common.GuId();
+            model.F_EnabledMark = true;
+            model.F_BackupTime = DateTime.Now;
+            service.ExecuteDbBackup(model);
         }
     }
 }

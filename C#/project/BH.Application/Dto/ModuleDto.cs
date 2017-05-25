@@ -1,31 +1,20 @@
 ﻿using System;
-using BH.Domain.Infrastructure;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Domain.Entity
+namespace BH.Application.Dto
 {
-    public class Sys_Module : FullAudited
+    public class ModuleDto
     {
-        [MaxLength(50)]
-        [Column(TypeName = "varchar")]
+        public string F_Id { get; set; }
         public string F_ParentId { get; set; }
         public int? F_Layers { get; set; }
-        [MaxLength(50)]
-        [Column(TypeName = "varchar")]
         public string F_EnCode { get; set; }
-        [MaxLength(50)]
-        [Column(TypeName = "varchar")]
         public string F_FullName { get; set; }
-        [MaxLength(50)]
-        [Column(TypeName = "varchar")]
         public string F_Icon { get; set; }
-        [MaxLength(500)]
-        [Column(TypeName = "varchar")]
         public string F_UrlAddress { get; set; }
-        [MaxLength(50)]
-        [Column(TypeName = "varchar")]
         public string F_Target { get; set; }
         public bool? F_IsMenu { get; set; }
         public bool? F_IsExpand { get; set; }
@@ -34,9 +23,6 @@ namespace BH.Domain.Entity
         public bool? F_AllowDelete { get; set; }
         public int? F_SortCode { get; set; }
         public bool? F_EnabledMark { get; set; }
-        [MaxLength(500)]
-        [Column(TypeName = "varchar")]
         public string F_Description { get; set; }
-        public virtual ICollection<Sys_ModuleButton> Sys_ModuleButton { get; set; }
     }
 }

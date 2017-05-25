@@ -147,6 +147,16 @@ namespace BH.Code
         {
             WriteSession<string>(key, value);
         }
+        /// <summary>
+        /// 读取Session的值
+        /// </summary>
+        /// <param name="key">Session的键名</param>        
+        public static T GetSession<T>(string key)
+        {
+            if (key.IsEmpty())
+                return default(T);
+            return (T)HttpContext.Current.Session[key];
+        }
 
         /// <summary>
         /// 读取Session的值

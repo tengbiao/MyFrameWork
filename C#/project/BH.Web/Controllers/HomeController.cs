@@ -1,10 +1,4 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
+﻿using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity;
 using System.Collections.Generic;

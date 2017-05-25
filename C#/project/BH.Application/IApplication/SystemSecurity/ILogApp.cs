@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using BH.Code;
 using BH.Domain.Entity;
+using BH.Application.Dto;
+using System.Threading.Tasks;
 
 namespace BH.IApplication
 {
     public interface ILogApp
     {
-        List<Sys_Log> GetList(Pagination pagination, string queryJson);
-        void RemoveLog(string keepTime);
-        void WriteDbLog(bool result, string resultLog);
-        void WriteDbLog(Sys_Log Sys_Log);
+        Task<List<LogDto>> GetList(Pagination pagination, string queryJson);
+        Task<int> RemoveLog(string keepTime);
+        Task<int> WriteDbLog(bool result, string resultLog);
+        Task<int> WriteDbLog(LogDto logInputDto);
     }
 }

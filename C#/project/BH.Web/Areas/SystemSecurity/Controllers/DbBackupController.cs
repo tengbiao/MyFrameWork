@@ -1,4 +1,5 @@
-﻿using BH.Application.SystemSecurity;
+﻿using BH.Application.Dto;
+using BH.Application.SystemSecurity;
 using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -24,11 +25,11 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(Sys_DbBackup Sys_DbBackup)
+        public ActionResult SubmitForm(DbBackupDto dbBackupInputDto)
         {
-            Sys_DbBackup.F_FilePath = Server.MapPath("~/Resource/DbBackup/" + Sys_DbBackup.F_FileName + ".bak");
-            Sys_DbBackup.F_FileName = Sys_DbBackup.F_FileName + ".bak";
-            _dbBackupApp.SubmitForm(Sys_DbBackup);
+            dbBackupInputDto.F_FilePath = Server.MapPath("~/Resource/DbBackup/" + dbBackupInputDto.F_FileName + ".bak");
+            dbBackupInputDto.F_FileName = dbBackupInputDto.F_FileName + ".bak";
+            _dbBackupApp.SubmitForm(dbBackupInputDto);
             return Success("操作成功。");
         }
         [HttpPost]

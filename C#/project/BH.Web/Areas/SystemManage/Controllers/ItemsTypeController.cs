@@ -1,4 +1,5 @@
-﻿using BH.Application.SystemManage;
+﻿using BH.Application.Dto;
+using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -22,7 +23,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _itemsApp.GetList();
             var treeList = new List<TreeSelectModel>();
-            foreach (Sys_Items item in data)
+            foreach (var item in data)
             {
                 TreeSelectModel treeModel = new TreeSelectModel();
                 treeModel.id = item.F_Id;
@@ -38,7 +39,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _itemsApp.GetList();
             var treeList = new List<TreeViewModel>();
-            foreach (Sys_Items item in data)
+            foreach (var item in data)
             {
                 TreeViewModel tree = new TreeViewModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -59,8 +60,8 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var data = _itemsApp.GetList();
             var treeList = new List<TreeGridModel>();
-            foreach (Sys_Items item in data)
-            {
+            foreach (var item in data)
+            { 
                 TreeGridModel treeModel = new TreeGridModel();
                 bool hasChildren = data.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
                 treeModel.id = item.F_Id;
@@ -82,9 +83,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(Sys_Items Sys_Items, string keyValue)
+        public ActionResult SubmitForm(ItemsDto itemsInputDto, string keyValue)
         {
-            _itemsApp.SubmitForm(Sys_Items, keyValue);
+            _itemsApp.SubmitForm(itemsInputDto, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

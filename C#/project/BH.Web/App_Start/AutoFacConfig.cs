@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
 using System;
-using System.Reflection;
 using System.Web.Mvc;
 using System.Linq;
 using BH.Data;
@@ -53,5 +52,6 @@ namespace BH.Web.App_Start
             //此处使用的是将AutoFac工作容器交给MVC底层 (需要using System.Web.Mvc;)  
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
+
     }
 }

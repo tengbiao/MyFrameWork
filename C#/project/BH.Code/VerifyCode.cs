@@ -36,7 +36,7 @@ namespace BH.Code
                 chkCode += character[rnd.Next(character.Length)];
             }
             //写入Session、验证码加密
-            WebHelper.WriteSession("BH_session_verifycode", Md5.md5(chkCode.ToLower(), 16));
+            WebHelper.WriteSession("bh_session_verifycode", Encryptor.Md5Encryptor16(chkCode.ToLower()));
             //创建画布
             Bitmap bmp = new Bitmap(codeW, codeH);
             Graphics g = Graphics.FromImage(bmp);

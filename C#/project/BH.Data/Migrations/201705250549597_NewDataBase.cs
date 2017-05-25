@@ -3,7 +3,7 @@ namespace BH.Data.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class newDataBase : DbMigration
+    public partial class NewDataBase : DbMigration
     {
         public override void Up()
         {
@@ -121,7 +121,9 @@ namespace BH.Data.Migrations
                         F_DeleteUserId = c.String(maxLength: 50, unicode: false),
                         F_DeleteTime = c.DateTime(),
                     })
-                .PrimaryKey(t => t.F_Id);
+                .PrimaryKey(t => t.F_Id)
+                .ForeignKey("dbo.Sys_Items", t => t.F_ItemId)
+                .Index(t => t.F_ItemId);
             
             CreateTable(
                 "dbo.Sys_Log",
@@ -202,7 +204,9 @@ namespace BH.Data.Migrations
                         F_DeleteUserId = c.String(maxLength: 50, unicode: false),
                         F_DeleteTime = c.DateTime(),
                     })
-                .PrimaryKey(t => t.F_Id);
+                .PrimaryKey(t => t.F_Id)
+                .ForeignKey("dbo.Sys_Module", t => t.F_ModuleId)
+                .Index(t => t.F_ModuleId);
             
             CreateTable(
                 "dbo.Sys_Organize",
@@ -344,6 +348,10 @@ namespace BH.Data.Migrations
         
         public override void Down()
         {
+            DropForeignKey("dbo.Sys_ModuleButton", "F_ModuleId", "dbo.Sys_Module");
+            DropForeignKey("dbo.Sys_ItemsDetail", "F_ItemId", "dbo.Sys_Items");
+            DropIndex("dbo.Sys_ModuleButton", new[] { "F_ModuleId" });
+            DropIndex("dbo.Sys_ItemsDetail", new[] { "F_ItemId" });
             DropTable("dbo.Sys_UserLogOn");
             DropTable("dbo.Sys_User");
             DropTable("dbo.Sys_RoleAuthorize");

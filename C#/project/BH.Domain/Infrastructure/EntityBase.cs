@@ -56,7 +56,7 @@ namespace BH.Domain.Infrastructure
         {
             dynamic entity = null;
             if ((this as IFullAudited<KeyType>) != null)
-                entity = this as IFullAudited;
+                entity = this as IFullAudited<KeyType>;
             else if ((this as ICreationAudited<KeyType>) != null)
                 entity = this as ICreationAudited<KeyType>;
             else if ((this as IModificationAudited<KeyType>) != null)

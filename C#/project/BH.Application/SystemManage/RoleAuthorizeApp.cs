@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.IApplication;
 using BH.Data;
+using BH.Application.Dto;
 
 namespace BH.Application.SystemManage
 {
@@ -24,49 +25,49 @@ namespace BH.Application.SystemManage
             _moduleButtonRepository = moduleButtonRepository;
         }
 
-        public List<Sys_RoleAuthorize> GetList(string ObjectId)
+        public List<RoleAuthorizeDto> GetList(string ObjectId)
         {
-            return _repository.IQueryable(t => t.F_ObjectId == ObjectId).ToList();
+            return _repository.IQueryable(t => t.F_ObjectId == ObjectId).MapToList<RoleAuthorizeDto>();
         }
-        public List<Sys_Module> GetMenuList(string roleId)
+        public List<ModuleDto> GetMenuList(string roleId)
         {
-            var data = new List<Sys_Module>();
+            var data = new List<ModuleDto>();
             if (OperatorProvider.Provider.GetCurrent().IsSystem)
             {
-                data = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                data = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).MapToList<ModuleDto>();
             }
             else
             {
-                var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).MapToList<ModuleDto>();
                 var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 1).ToList();
                 foreach (var item in authorizedata)
                 {
-                    Sys_Module Sys_Module = moduledata.Find(t => t.F_Id == item.F_ItemId);
-                    if (Sys_Module != null)
+                    ModuleDto moduleDto = moduledata.Find(t => t.F_Id == item.F_ItemId);
+                    if (moduleDto != null)
                     {
-                        data.Add(Sys_Module);
+                        data.Add(moduleDto);
                     }
                 }
             }
             return data.OrderBy(t => t.F_SortCode).ToList();
         }
-        public List<Sys_ModuleButton> GetButtonList(string roleId)
+        public List<ModuleButtonDto> GetButtonList(string roleId)
         {
-            var data = new List<Sys_ModuleButton>();
+            var data = new List<ModuleButtonDto>();
             if (OperatorProvider.Provider.GetCurrent().IsSystem)
             {
-                data = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                data = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).MapToList<ModuleButtonDto>();
             }
             else
             {
-                var buttondata = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
+                var buttondata = _moduleButtonRepository.IQueryable().OrderBy(o => o.F_SortCode).MapToList<ModuleButtonDto>();
                 var authorizedata = _repository.IQueryable(t => t.F_ObjectId == roleId && t.F_ItemType == 2).ToList();
                 foreach (var item in authorizedata)
                 {
-                    Sys_ModuleButton Sys_ModuleButton = buttondata.Find(t => t.F_Id == item.F_ItemId);
-                    if (Sys_ModuleButton != null)
+                    ModuleButtonDto moduleButtonDto = buttondata.Find(t => t.F_Id == item.F_ItemId);
+                    if (moduleButtonDto != null)
                     {
-                        data.Add(Sys_ModuleButton);
+                        data.Add(moduleButtonDto);
                     }
                 }
             }

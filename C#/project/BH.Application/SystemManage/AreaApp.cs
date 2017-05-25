@@ -1,4 +1,6 @@
-﻿using BH.Application.IApplication;
+﻿using BH.Application.Dto;
+using BH.Application.IApplication;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using System;
@@ -16,15 +18,16 @@ namespace BH.Application.SystemManage
             this._repository = service;
         }
 
-        public List<Sys_Area> GetList()
+        public List<AreaDto> GetList()
         {
-            var result = _repository.IQueryable().ToList();
+            var result = _repository.IQueryable().MapToList<AreaDto>();
             return result;
         }
 
-        public async Task<Sys_Area> GetForm(string keyValue)
+        public async Task<AreaDto> GetForm(string keyValue)
         {
-            return await _repository.FindKeyAsync(keyValue);
+            var result = await _repository.FindKeyAsync(keyValue);
+            return result.MapTo<AreaDto>();
         }
 
         public void DeleteForm(string keyValue)
@@ -39,17 +42,18 @@ namespace BH.Application.SystemManage
             }
         }
 
-        public void SubmitForm(Sys_Area areaEntity, string keyValue)
+        public void SubmitForm(AreaDto areaEntity, string keyValue)
         {
+            var model = areaEntity.MapTo<Sys_Area>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                areaEntity.Modify(keyValue);
-                _repository.Update(areaEntity);
+                model.Modify(keyValue);
+                _repository.Update(model);
             }
             else
             {
-                areaEntity.Create();
-                _repository.Insert(areaEntity);
+                model.Create();
+                _repository.Insert(model);
             }
         }
     }

@@ -1,9 +1,5 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -21,13 +17,13 @@ namespace BH.Application.SystemManage
             _repository = repository;
         }
 
-        public List<Sys_Organize> GetList()
+        public List<OrganizaDto> GetList()
         {
-            return _repository.IQueryable().OrderBy(t => t.F_CreatorTime).ToList();
+            return _repository.IQueryable().OrderBy(t => t.F_CreatorTime).MapToList<OrganizaDto>();
         }
-        public Sys_Organize GetForm(string keyValue)
+        public OrganizaDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<OrganizaDto>();
         }
         public void DeleteForm(string keyValue)
         {
@@ -40,17 +36,18 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(Sys_Organize Sys_Organize, string keyValue)
+        public void SubmitForm(OrganizaDto organizaInputDto, string keyValue)
         {
+            var model = organizaInputDto.MapTo<Sys_Organize>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_Organize.Modify(keyValue);
-                _repository.Update(Sys_Organize);
+                model.Modify(keyValue);
+                _repository.Update(model);
             }
             else
             {
-                Sys_Organize.Create();
-                _repository.Insert(Sys_Organize);
+                model.Create();
+                _repository.Insert(model);
             }
         }
     }

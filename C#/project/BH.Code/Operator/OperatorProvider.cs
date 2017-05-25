@@ -12,7 +12,7 @@ namespace BH.Code
         {
             get { return new OperatorProvider(); }
         }
-        private string LoginUserKey = "BH_loginuserkey_2016";
+        private string LoginUserKey = "Session_Id";
         private string LoginProvider = Configs.GetValue("LoginProvider");
 
         public OperatorModel GetCurrent()
@@ -20,11 +20,11 @@ namespace BH.Code
             OperatorModel operatorModel = new OperatorModel();
             if (LoginProvider == "Cookie")
             {
-                operatorModel = DESEncrypt.Decrypt(WebHelper.GetCookie(LoginUserKey).ToString()).ToObject<OperatorModel>();
+                operatorModel = Encryptor.DesDecrypt(WebHelper.GetCookie(LoginUserKey).ToString()).ToObject<OperatorModel>();
             }
             else
             {
-                operatorModel = DESEncrypt.Decrypt(WebHelper.GetSession(LoginUserKey).ToString()).ToObject<OperatorModel>();
+                operatorModel = Encryptor.DesDecrypt(WebHelper.GetSession(LoginUserKey).ToString()).ToObject<OperatorModel>();
             }
             return operatorModel;
         }
@@ -32,14 +32,14 @@ namespace BH.Code
         {
             if (LoginProvider == "Cookie")
             {
-                WebHelper.WriteCookie(LoginUserKey, DESEncrypt.Encrypt(operatorModel.ToJson()), 60);
+                WebHelper.WriteCookie(LoginUserKey, Encryptor.DesEncrypt(operatorModel.ToJson()), 60);
             }
             else
             {
-                WebHelper.WriteSession(LoginUserKey, DESEncrypt.Encrypt(operatorModel.ToJson()));
+                WebHelper.WriteSession(LoginUserKey, Encryptor.DesEncrypt(operatorModel.ToJson()));
             }
-            WebHelper.WriteCookie("BH_mac", Md5.md5(Net.GetMacByNetworkInterface().ToJson(), 32));
-            WebHelper.WriteCookie("BH_licence", Licence.GetLicence());
+            //WebHelper.WriteCookie("BH_mac", Encryptor.Md5Encryptor32(Net.GetMacByNetworkInterface().ToJson()));
+            //WebHelper.WriteCookie("BH_licence", Licence.GetLicence());
         }
         public void RemoveCurrent()
         {

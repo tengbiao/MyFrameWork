@@ -1,9 +1,11 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BH.Application.SystemManage
 {
@@ -17,7 +19,7 @@ namespace BH.Application.SystemManage
             _userLogOnRepository = Sys_UserLogOnRepository;
         }
 
-        public List<Sys_User> GetList(Pagination pagination, string keyword)
+        public async Task<List<UserDto>> GetList(Pagination pagination, string keyword)
         {
             var expression = ExtLinq.True<Sys_User>();
             if (!string.IsNullOrEmpty(keyword))
@@ -27,61 +29,67 @@ namespace BH.Application.SystemManage
                 expression = expression.Or(t => t.F_MobilePhone.Contains(keyword));
             }
             expression = expression.And(t => t.F_Account != "admin");
-            return _repository.FindList(expression, pagination);
+            return (await _repository.FindListAsync(expression, pagination)).MapToList<UserDto>();
         }
-        public Sys_User GetForm(string keyValue)
+        public async Task<UserDto> GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return (await _repository.FindKeyAsync(keyValue)).MapTo<UserDto>();
         }
-        public void DeleteForm(string keyValue)
+        public async Task<int> DeleteForm(string keyValue)
         {
             _repository.LazySaveChanges();
             _userLogOnRepository.LazySaveChanges();
-            _repository.Delete(t => t.F_Id == keyValue);
-            _userLogOnRepository.Delete(t => t.F_UserId == keyValue);
-            _repository.SaveChanges(true);
+            await _repository.DeleteAsync(t => t.F_Id == keyValue);
+            await _userLogOnRepository.DeleteAsync(t => t.F_UserId == keyValue);
+            return await _repository.SaveChangesAsync(true);
         }
-        public void SubmitForm(Sys_User Sys_User, Sys_UserLogOn Sys_UserLogOn, string keyValue)
+        public async Task<int> SubmitForm(UserDto userInputDto, UserLogOnDto userLogOnInputDto, string keyValue)
         {
+            var userModel = userInputDto.MapTo<Sys_User>();
+            var userLogOnModel = userLogOnInputDto.MapTo<Sys_UserLogOn>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_User.Modify(keyValue);
+                userModel.Modify(keyValue);
             }
             else
             {
-                Sys_User.Create();
+                userModel.Create();
             }
 
             _repository.LazySaveChanges();
             _userLogOnRepository.LazySaveChanges();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                _repository.Update(Sys_User);
+                await _repository.UpdateAsync(userModel);
             }
             else
             {
-                Sys_UserLogOn.F_Id = Sys_User.F_Id;
-                Sys_UserLogOn.F_UserId = Sys_User.F_Id;
-                Sys_UserLogOn.F_UserSecretkey = Md5.md5(Common.CreateNo(), 16).ToLower();
-                Sys_UserLogOn.F_UserPassword = Md5.md5(DESEncrypt.Encrypt(Md5.md5(Sys_UserLogOn.F_UserPassword, 32).ToLower(), Sys_UserLogOn.F_UserSecretkey).ToLower(), 32).ToLower();
-                _repository.Insert(Sys_User);
-                _userLogOnRepository.Insert(Sys_UserLogOn);
+                userLogOnModel.F_Id = userModel.F_Id;
+                userLogOnModel.F_UserId = userModel.F_Id;
+                userLogOnModel.F_UserSecretkey = Encryptor.Md5Encryptor16(Common.CreateNo()).ToLower();
+                //密码逻辑，  密码明文md5加密 => 根据生成的令牌Des加密md5加密过的密码 => 再次md5加密
+                userLogOnModel.F_UserPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(
+                    Encryptor.Md5Encryptor32(userLogOnModel.F_UserPassword).ToLower(),userLogOnModel.F_UserSecretkey).ToLower()).ToLower();
+                await _repository.InsertAsync(userModel);
+                await _userLogOnRepository.InsertAsync(userLogOnModel);
             }
-            _repository.SaveChanges(true);
+            return await _repository.SaveChangesAsync(true);
         }
-        public void UpdateForm(Sys_User Sys_User)
+        public async Task<int> UpdateForm(UserDto userInputDto)
         {
-            _repository.Update(Sys_User);
+            var model = userInputDto.MapTo<Sys_User>();
+            await _repository.UpdateAsync(model);
+            return 1;
         }
-        public Sys_User CheckLogin(string username, string password)
+        public async Task<UserDto> CheckLogin(string username, string password)
         {
-            Sys_User Sys_User = _repository.FindEntity(t => t.F_Account == username);
+            Sys_User Sys_User = await _repository.FindEntityAsync(t => t.F_Account == username);
             if (Sys_User != null)
             {
                 if (Sys_User.F_EnabledMark == true)
                 {
-                    Sys_UserLogOn Sys_UserLogOn = _userLogOnRepository.FindKey(Sys_User.F_Id);
-                    string dbPassword = Md5.md5(DESEncrypt.Encrypt(password.ToLower(), Sys_UserLogOn.F_UserSecretkey).ToLower(), 32).ToLower();
+                    Sys_UserLogOn Sys_UserLogOn = await _userLogOnRepository.FindKeyAsync(Sys_User.F_Id);
+                    string dbPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(password, Sys_UserLogOn.F_UserSecretkey).ToLower()).ToLower();
                     if (dbPassword == Sys_UserLogOn.F_UserPassword)
                     {
                         DateTime lastVisitTime = DateTime.Now;
@@ -92,8 +100,8 @@ namespace BH.Application.SystemManage
                         }
                         Sys_UserLogOn.F_LastVisitTime = lastVisitTime;
                         Sys_UserLogOn.F_LogOnCount = LogOnCount;
-                        _userLogOnRepository.Update(Sys_UserLogOn);
-                        return Sys_User;
+                        await _userLogOnRepository.UpdateAsync(Sys_UserLogOn);
+                        return Sys_User.MapTo<UserDto>();
                     }
                     else
                     {

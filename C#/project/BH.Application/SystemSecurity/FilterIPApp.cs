@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -15,34 +16,35 @@ namespace BH.Application.SystemSecurity
             this._repository = repository;
         }
 
-        public List<Sys_FilterIP> GetList(string keyword)
+        public List<FilterIPDto> GetList(string keyword)
         {
             var expression = ExtLinq.True<Sys_FilterIP>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 expression = expression.And(t => t.F_StartIP.Contains(keyword));
             }
-            return _repository.IQueryable(expression).OrderByDescending(t => t.F_DeleteTime).ToList();
+            return _repository.IQueryable(expression).OrderByDescending(t => t.F_DeleteTime).MapToList<FilterIPDto>();
         }
-        public Sys_FilterIP GetForm(string keyValue)
+        public FilterIPDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<FilterIPDto>();
         }
         public void DeleteForm(string keyValue)
         {
             _repository.Delete(t => t.F_Id == keyValue);
         }
-        public void SubmitForm(Sys_FilterIP Sys_FilterIP, string keyValue)
+        public void SubmitForm(FilterIPDto filterIpInputDto, string keyValue)
         {
+            var model = filterIpInputDto.MapTo<Sys_FilterIP>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_FilterIP.Modify(keyValue);
-                _repository.Update(Sys_FilterIP);
+                model.Modify(keyValue);
+                _repository.Update(model);
             }
             else
             {
-                Sys_FilterIP.Create();
-                _repository.Insert(Sys_FilterIP);
+                model.Create();
+                _repository.Insert(model);
             }
         }
     }

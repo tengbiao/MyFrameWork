@@ -1,9 +1,11 @@
-﻿using BH.Application.SystemManage;
+﻿using BH.Application.Dto;
+using BH.Application.SystemManage;
 using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 
@@ -21,11 +23,11 @@ namespace BH.Web.Areas.SystemManage.Controllers
 
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult GetGridJson(Pagination pagination, string keyword)
+        public async Task<ActionResult> GetGridJson(Pagination pagination, string keyword)
         {
             var data = new
             {
-                rows = _userApp.GetList(pagination, keyword),
+                rows = await _userApp.GetList(pagination, keyword),
                 total = pagination.total,
                 page = pagination.page,
                 records = pagination.records
@@ -34,26 +36,27 @@ namespace BH.Web.Areas.SystemManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult GetFormJson(string keyValue)
+        public async Task<ActionResult> GetFormJson(string keyValue)
         {
-            var data = _userApp.GetForm(keyValue);
+            var data = await _userApp.GetForm(keyValue);
             return Content(data.ToJson());
         }
         [HttpPost]
         [HandlerAjaxOnly]
+        [HandlerAuthorize]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(Sys_User Sys_User, Sys_UserLogOn Sys_UserLogOn, string keyValue)
+        public async Task<ActionResult> SubmitForm(UserDto userInputDto, UserLogOnDto userLogOnInputDto, string keyValue)
         {
-            _userApp.SubmitForm(Sys_User, Sys_UserLogOn, keyValue);
+            await _userApp.SubmitForm(userInputDto, userLogOnInputDto, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]
         [HandlerAuthorize]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteForm(string keyValue)
+        public async Task<ActionResult> DeleteForm(string keyValue)
         {
-            _userApp.DeleteForm(keyValue);
+            await _userApp.DeleteForm(keyValue);
             return Success("删除成功。");
         }
         [HttpGet]
@@ -74,24 +77,28 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         [HandlerAuthorize]
         [ValidateAntiForgeryToken]
-        public ActionResult DisabledAccount(string keyValue)
+        public async Task<ActionResult> DisabledAccount(string keyValue)
         {
-            Sys_User Sys_User = new Sys_User();
-            Sys_User.F_Id = keyValue;
-            Sys_User.F_EnabledMark = false;
-            _userApp.UpdateForm(Sys_User);
+            var user = new UserDto
+            {
+                F_Id = keyValue,
+                F_EnabledMark = false
+            };
+            await _userApp.UpdateForm(user);
             return Success("账户禁用成功。");
         }
         [HttpPost]
         [HandlerAjaxOnly]
         [HandlerAuthorize]
         [ValidateAntiForgeryToken]
-        public ActionResult EnabledAccount(string keyValue)
+        public async Task<ActionResult> EnabledAccount(string keyValue)
         {
-            Sys_User Sys_User = new Sys_User();
-            Sys_User.F_Id = keyValue;
-            Sys_User.F_EnabledMark = true;
-            _userApp.UpdateForm(Sys_User);
+            var user = new UserDto
+            {
+                F_Id = keyValue,
+                F_EnabledMark = true
+            };
+            await _userApp.UpdateForm(user);
             return Success("账户启用成功。");
         }
 

@@ -17,7 +17,7 @@ namespace BH.Code
             if (host.Equals("localhost"))
                 return true;
             string licence = ConfigurationManager.AppSettings["LicenceKey"];
-            if (licence != null && licence == Md5.md5(key, 32))
+            if (licence != null && licence == Encryptor.Md5Encryptor32(key))
                 return true;
 
             return false;
@@ -30,7 +30,7 @@ namespace BH.Code
                 licence = Common.GuId();
                 Configs.SetValue("LicenceKey", licence);
             }
-            return Md5.md5(licence, 32);
+            return Encryptor.Md5Encryptor32(licence);
         }
     }
 }

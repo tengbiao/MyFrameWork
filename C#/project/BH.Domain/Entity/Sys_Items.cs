@@ -1,5 +1,6 @@
 ﻿using BH.Domain.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,5 +24,6 @@ namespace BH.Domain.Entity
         [MaxLength(500)]
         [Column(TypeName = "varchar")]
         public string F_Description { get; set; }
+        public virtual ICollection<Sys_ItemsDetail> Sys_ItemsDetail { get; set; }
     }
 }

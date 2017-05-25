@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System.Web.Mvc;
@@ -30,9 +31,9 @@ namespace BH.Web.Areas.SystemSecurity.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(Sys_FilterIP Sys_FilterIP, string keyValue)
+        public ActionResult SubmitForm(FilterIPDto filterIPInputDto, string keyValue)
         {
-            filterIPApp.SubmitForm(Sys_FilterIP, keyValue);
+            filterIPApp.SubmitForm(filterIPInputDto, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

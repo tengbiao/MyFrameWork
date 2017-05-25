@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -16,18 +17,18 @@ namespace BH.Application.SystemManage
             _repository = repository;
         }
 
-        public List<Sys_ModuleButton> GetList(string moduleId = "")
+        public List<ModuleButtonDto> GetList(string moduleId = "")
         {
             var expression = ExtLinq.True<Sys_ModuleButton>();
             if (!string.IsNullOrEmpty(moduleId))
             {
                 expression = expression.And(t => t.F_ModuleId == moduleId);
             }
-            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).MapToList<ModuleButtonDto>();
         }
-        public Sys_ModuleButton GetForm(string keyValue)
+        public ModuleButtonDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<ModuleButtonDto>();
         }
         public void DeleteForm(string keyValue)
         {
@@ -40,23 +41,24 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(Sys_ModuleButton Sys_ModuleButton, string keyValue)
+        public void SubmitForm(ModuleButtonDto moduleButtonDto, string keyValue)
         {
+            var model = moduleButtonDto.MapTo<Sys_ModuleButton>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_ModuleButton.Modify(keyValue);
-                _repository.Update(Sys_ModuleButton);
+                model.Modify(keyValue);
+                _repository.Update(model);
             }
             else
             {
-                Sys_ModuleButton.Create();
-                _repository.Insert(Sys_ModuleButton);
+                model.Create();
+                _repository.Insert(model);
             }
         }
         public void SubmitCloneButton(string moduleId, string Ids)
         {
             string[] ArrayId = Ids.Split(',');
-            var data = this.GetList();
+            var data = _repository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
             List<Sys_ModuleButton> entitys = new List<Sys_ModuleButton>();
             foreach (string item in ArrayId)
             {

@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -17,7 +18,7 @@ namespace BH.Application.SystemManage
             _itemRepository = itemRepository;
         }
 
-        public List<Sys_ItemsDetail> GetList(string itemId = "", string keyword = "")
+        public List<ItemsDetailDto> GetList(string itemId = "", string keyword = "")
         {
             var expression = ExtLinq.True<Sys_ItemsDetail>();
             if (!string.IsNullOrEmpty(itemId))
@@ -29,9 +30,9 @@ namespace BH.Application.SystemManage
                 expression = expression.And(t => t.F_ItemName.Contains(keyword));
                 expression = expression.Or(t => t.F_ItemCode.Contains(keyword));
             }
-            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).MapToList<ItemsDetailDto>();
         }
-        public List<Sys_ItemsDetail> GetItemList(string enCode)
+        public List<ItemsDetailDto> GetItemList(string enCode)
         {
             var query = (from detail in _repository.IQueryable()
                          join item in _itemRepository.IQueryable()
@@ -40,27 +41,28 @@ namespace BH.Application.SystemManage
                          orderby detail.F_SortCode ascending
                          select detail
             );
-            return query.ToList();
+            return query.MapToList<ItemsDetailDto>();
         }
-        public Sys_ItemsDetail GetForm(string keyValue)
+        public ItemsDetailDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<ItemsDetailDto>();
         }
         public void DeleteForm(string keyValue)
         {
             _repository.Delete(t => t.F_Id == keyValue);
         }
-        public void SubmitForm(Sys_ItemsDetail Sys_ItemsDetail, string keyValue)
+        public void SubmitForm(ItemsDetailDto itemsDetailInputDto, string keyValue)
         {
+            var model = itemsDetailInputDto.MapTo<Sys_ItemsDetail>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_ItemsDetail.Modify(keyValue);
-                _repository.Update(Sys_ItemsDetail);
+                model.Modify(keyValue);
+                _repository.Update(model);
             }
             else
             {
-                Sys_ItemsDetail.Create();
-                _repository.Insert(Sys_ItemsDetail);
+                model.Create();
+                _repository.Insert(model);
             }
         }
     }

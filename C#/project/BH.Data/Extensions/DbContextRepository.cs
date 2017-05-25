@@ -114,7 +114,7 @@ namespace BH.Data
 
         public TEntity Update(TEntity entity)
         {
-            Context.Set<TEntity>().Attach(entity);
+            Table.Attach(entity);
             PropertyInfo[] props = entity.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
             {

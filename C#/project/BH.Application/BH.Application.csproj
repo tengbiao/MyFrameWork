@@ -43,6 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\AreaDto.cs" />
+    <Compile Include="Dto\FilterIPDto.cs" />
+    <Compile Include="Dto\ItemsDetailDto.cs" />
+    <Compile Include="Dto\ItemsDto.cs" />
+    <Compile Include="Dto\LogDto.cs" />
+    <Compile Include="Dto\ModuleDto.cs" />
+    <Compile Include="Dto\ModuleButtonDto.cs" />
+    <Compile Include="Dto\OrganizaDto.cs" />
+    <Compile Include="Dto\RoleDto.cs" />
+    <Compile Include="Dto\RoleAuthorizeDto.cs" />
+    <Compile Include="Dto\DbBackupDto.cs" />
+    <Compile Include="Dto\UserDto.cs" />
     <Compile Include="IApplication\SystemManage\IAreaApp.cs" />
     <Compile Include="Infrastructure\DbLogType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

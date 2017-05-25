@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -25,7 +26,7 @@ namespace BH.Application.SystemManage
             _moduleButtonRepository = moduleButtonRepository;
         }
 
-        public List<Sys_Role> GetList(string keyword = "")
+        public List<RoleDto> GetList(string keyword = "")
         {
             var expression = ExtLinq.True<Sys_Role>();
             if (!string.IsNullOrEmpty(keyword))
@@ -34,12 +35,12 @@ namespace BH.Application.SystemManage
                 expression = expression.Or(t => t.F_EnCode.Contains(keyword));
             }
             expression = expression.And(t => t.F_Category == 1);
-            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).ToList();
+            return _repository.IQueryable(expression).OrderBy(t => t.F_SortCode).MapToList<RoleDto>();
         }
 
-        public Sys_Role GetForm(string keyValue)
+        public RoleDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<DutyDto>();
         }
 
         public void DeleteForm(string keyValue)
@@ -51,25 +52,26 @@ namespace BH.Application.SystemManage
             _repository.SaveChanges(true);
         }
 
-        public void SubmitForm(Sys_Role Sys_Role, string[] permissionIds, string keyValue)
+        public void SubmitForm(RoleDto roleInputDto, string[] permissionIds, string keyValue)
         {
+            var model = roleInputDto.MapTo<Sys_Role>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_Role.F_Id = keyValue;
+                model.F_Id = keyValue;
             }
             else
             {
-                Sys_Role.F_Id = Common.GuId();
+                model.F_Id = Common.GuId();
             }
             var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
-            var buttondata = _repository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
+            var buttondata = _moduleButtonRepository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
             List<Sys_RoleAuthorize> Sys_RoleAuthorizes = new List<Sys_RoleAuthorize>();
             foreach (var itemId in permissionIds)
             {
                 Sys_RoleAuthorize Sys_RoleAuthorize = new Sys_RoleAuthorize();
                 Sys_RoleAuthorize.F_Id = Common.GuId();
                 Sys_RoleAuthorize.F_ObjectType = 1;
-                Sys_RoleAuthorize.F_ObjectId = Sys_Role.F_Id;
+                Sys_RoleAuthorize.F_ObjectId = model.F_Id;
                 Sys_RoleAuthorize.F_ItemId = itemId;
                 if (moduledata.Find(t => t.F_Id == itemId) != null)
                 {
@@ -86,14 +88,14 @@ namespace BH.Application.SystemManage
             {
                 if (!string.IsNullOrEmpty(keyValue))
                 {
-                    _repository.Update(Sys_Role);
+                    _repository.Update(model);
                 }
                 else
                 {
-                    Sys_Role.F_Category = 1;
-                    _repository.Insert(Sys_Role);
+                    model.F_Category = 1;
+                    _repository.Insert(model);
                 }
-                _roleAuthorizeRepository.Delete(t => t.F_ObjectId == Sys_Role.F_Id);
+                _roleAuthorizeRepository.Delete(t => t.F_ObjectId == model.F_Id);
                 _roleAuthorizeRepository.Insert(Sys_RoleAuthorizes);
                 scope.Complete();
             }

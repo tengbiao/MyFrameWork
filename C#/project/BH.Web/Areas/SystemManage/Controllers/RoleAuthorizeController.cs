@@ -1,10 +1,4 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
+﻿using BH.Application.Dto;
 using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -31,13 +25,13 @@ namespace BH.Web.Areas.SystemManage.Controllers
         {
             var moduledata = moduleApp.GetList();
             var buttondata = moduleButtonApp.GetList();
-            var authorizedata = new List<Sys_RoleAuthorize>();
+            var authorizedata = new List<RoleAuthorizeDto>();
             if (!string.IsNullOrEmpty(roleId))
             {
                 authorizedata = roleAuthorizeApp.GetList(roleId);
             }
             var treeList = new List<TreeViewModel>();
-            foreach (Sys_Module item in moduledata)
+            foreach (var item in moduledata)
             {
                 TreeViewModel tree = new TreeViewModel();
                 bool hasChildren = moduledata.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;
@@ -53,7 +47,7 @@ namespace BH.Web.Areas.SystemManage.Controllers
                 tree.img = item.F_Icon == "" ? "" : item.F_Icon;
                 treeList.Add(tree);
             }
-            foreach (Sys_ModuleButton item in buttondata)
+            foreach (var item in buttondata)
             {
                 TreeViewModel tree = new TreeViewModel();
                 bool hasChildren = buttondata.Count(t => t.F_ParentId == item.F_Id) == 0 ? false : true;

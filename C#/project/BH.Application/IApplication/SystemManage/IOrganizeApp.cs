@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using BH.Domain.Entity;
+using BH.Application.Dto;
 
 namespace BH.IApplication
 {
     public interface IOrganizeApp
     {
         void DeleteForm(string keyValue);
-        Sys_Organize GetForm(string keyValue);
-        List<Sys_Organize> GetList();
-        void SubmitForm(Sys_Organize Sys_Organize, string keyValue);
+        OrganizaDto GetForm(string keyValue);
+        List<OrganizaDto> GetList();
+        void SubmitForm(OrganizaDto organizaInputDto, string keyValue);
     }
 }

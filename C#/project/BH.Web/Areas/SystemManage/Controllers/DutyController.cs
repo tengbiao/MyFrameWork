@@ -1,10 +1,4 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Application.SystemManage;
+﻿using BH.Application.Dto;
 using BH.Code;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -39,9 +33,9 @@ namespace BH.Web.Areas.SystemManage.Controllers
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitForm(Sys_Role Sys_Role, string keyValue)
+        public ActionResult SubmitForm(DutyDto dutyInputDto, string keyValue)
         {
-            _dutyApp.SubmitForm(Sys_Role, keyValue);
+            _dutyApp.SubmitForm(dutyInputDto, keyValue);
             return Success("操作成功。");
         }
         [HttpPost]

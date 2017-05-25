@@ -1,5 +1,6 @@
 namespace BH.Data.Migrations
 {
+    using BH.Code;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -41,14 +42,14 @@ namespace BH.Data.Migrations
                     F_CreatorTime = DateTime.Now,
                     F_CreatorUserId = "auto"
                 });
-
+            string secretKey = Encryptor.Md5Encryptor16(Common.CreateNo()).ToLower();
             context.Sys_UserLogOn.AddOrUpdate(p => p.F_Id,
                 new Domain.Entity.Sys_UserLogOn()
                 {
                     F_Id = adminId,
                     F_UserId = adminId,
-                    F_UserPassword = "44c35ab35cb0603e90d168642ca51fb6",
-                    F_UserSecretkey = "57d3031d6fc4a34d"
+                    F_UserPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(Encryptor.Md5Encryptor32("0000").ToLower(), secretKey).ToLower()).ToLower(),
+                    F_UserSecretkey = secretKey
                 });
         }
     }

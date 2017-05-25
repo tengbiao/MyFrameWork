@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using BH.Domain.Entity;
+using BH.Application.Dto;
 
 namespace BH.IApplication
 {
     public interface IRoleAuthorizeApp
     {
         bool ActionValidate(string roleId, string moduleId, string action);
-        List<Sys_ModuleButton> GetButtonList(string roleId);
-        List<Sys_RoleAuthorize> GetList(string ObjectId);
-        List<Sys_Module> GetMenuList(string roleId);
+        List<ModuleButtonDto> GetButtonList(string roleId);
+        List<RoleAuthorizeDto> GetList(string ObjectId);
+        List<ModuleDto> GetMenuList(string roleId);
     }
 }

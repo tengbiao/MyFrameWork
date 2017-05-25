@@ -29,6 +29,7 @@ namespace BH.Domain.Entity
         [MaxLength(500)]
         [Column(TypeName = "varchar")]
         public string F_Description { get; set; }
-
+        [ForeignKey("F_ItemId")]
+        public virtual Sys_Items Sys_Items { get; set; }
     }
 }

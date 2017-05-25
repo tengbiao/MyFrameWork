@@ -137,7 +137,7 @@ namespace BH.Code
                 HttpWebResponse HttpWResp = (HttpWebResponse)request.GetResponse();
                 myStream = HttpWResp.GetResponseStream();
             }
-            catch (WebException e)
+            catch //(WebException e)
             {
                 //LogResult(e.Message);
                 return "";
@@ -433,7 +433,7 @@ namespace BH.Code
                 responseStr = reader2.ReadToEnd();
                 //logger.Debug(string.Format("File uploaded, server response is: {0}", responseStr));
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 //logger.Error("Error uploading file", ex);
                 if (wresp != null)
@@ -499,7 +499,7 @@ namespace BH.Code
                 responseStr = reader2.ReadToEnd();
                 // logger.Error(string.Format("File uploaded, server response is: {0}", responseStr));
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 //logger.Error("Error uploading file", ex);
                 if (wresp != null)

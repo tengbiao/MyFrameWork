@@ -1,4 +1,6 @@
-﻿using BH.Data;
+﻿using BH.Application.Dto;
+using BH.Code;
+using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System;
@@ -14,13 +16,13 @@ namespace BH.Application.SystemManage
         {
             _repository = repository;
         }
-        public List<Sys_Items> GetList()
+        public List<ItemsDto> GetList()
         {
-            return _repository.IQueryable().ToList();
+            return _repository.IQueryable().MapToList<ItemsDto>();
         }
-        public Sys_Items GetForm(string keyValue)
+        public ItemsDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<ItemsDto>();
         }
         public void DeleteForm(string keyValue)
         {
@@ -33,17 +35,18 @@ namespace BH.Application.SystemManage
                 _repository.Delete(t => t.F_Id == keyValue);
             }
         }
-        public void SubmitForm(Sys_Items Sys_Items, string keyValue)
+        public void SubmitForm(ItemsDto itemsInputDto, string keyValue)
         {
+            var model = itemsInputDto.MapTo<Sys_Items>();
             if (!string.IsNullOrEmpty(keyValue))
             {
-                Sys_Items.Modify(keyValue);
-                _repository.Update(Sys_Items);
+                model.Modify(keyValue);
+                _repository.Update(model);
             }
             else
             {
-                Sys_Items.Create();
-                _repository.Insert(Sys_Items);
+                model.Create();
+                _repository.Insert(model);
             }
         }
     }

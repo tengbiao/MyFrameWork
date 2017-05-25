@@ -1,4 +1,5 @@
-﻿using BH.Code;
+﻿using BH.Application.Dto;
+using BH.Code;
 using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
@@ -12,20 +13,21 @@ namespace BH.Application.SystemManage
         {
             this._repository = repository;
         }
-        public Sys_UserLogOn GetForm(string keyValue)
+        public UserLogOnDto GetForm(string keyValue)
         {
-            return _repository.FindKey(keyValue);
+            return _repository.FindKey(keyValue).MapTo<UserLogOnDto>();
         }
-        public void UpdateForm(Sys_UserLogOn Sys_UserLogOn)
+        public void UpdateForm(UserLogOnDto userLogOnInputDto)
         {
-            _repository.Update(Sys_UserLogOn);
+            var model = userLogOnInputDto.MapTo<Sys_UserLogOn>();
+            _repository.Update(model);
         }
-        public void RevisePassword(string userPassword,string keyValue)
+        public void RevisePassword(string userPassword, string keyValue)
         {
             Sys_UserLogOn Sys_UserLogOn = new Sys_UserLogOn();
             Sys_UserLogOn.F_Id = keyValue;
-            Sys_UserLogOn.F_UserSecretkey = Md5.md5(Common.CreateNo(), 16).ToLower();
-            Sys_UserLogOn.F_UserPassword = Md5.md5(DESEncrypt.Encrypt(Md5.md5(userPassword, 32).ToLower(), Sys_UserLogOn.F_UserSecretkey).ToLower(), 32).ToLower();
+            Sys_UserLogOn.F_UserSecretkey = Encryptor.Md5Encryptor16(Common.CreateNo()).ToLower();
+            Sys_UserLogOn.F_UserPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(Encryptor.Md5Encryptor32(userPassword).ToLower(), Sys_UserLogOn.F_UserSecretkey).ToLower()).ToLower();
             _repository.Update(Sys_UserLogOn);
         }
     }
