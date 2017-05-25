@@ -34,13 +34,7 @@ namespace BH.Application.SystemManage
         }
         public List<ItemsDetailDto> GetItemList(string enCode)
         {
-            var query = (from detail in _repository.IQueryable()
-                         join item in _itemRepository.IQueryable()
-                         on detail.F_ItemId equals item.F_Id
-                         where item.F_EnCode == enCode && detail.F_EnabledMark.Value && !detail.F_DeleteMark.Value
-                         orderby detail.F_SortCode ascending
-                         select detail
-            );
+            var query = _repository.IQueryable(w => w.F_EnabledMark.Value && !w.F_DeleteMark.Value && w.Sys_Items!=null && w.Sys_Items.F_EnCode == enCode);
             return query.MapToList<ItemsDetailDto>();
         }
         public ItemsDetailDto GetForm(string keyValue)

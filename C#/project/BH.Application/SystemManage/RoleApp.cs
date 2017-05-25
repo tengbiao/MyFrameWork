@@ -45,11 +45,13 @@ namespace BH.Application.SystemManage
 
         public void DeleteForm(string keyValue)
         {
-            _repository.LazySaveChanges();
-            _roleAuthorizeRepository.LazySaveChanges();
-            _repository.Delete(t => t.F_Id == keyValue);
-            _roleAuthorizeRepository.Delete(t => t.F_ObjectId == keyValue);
-            _repository.SaveChanges(true);
+            using (var scope = new System.Transactions.TransactionScope())
+            {
+                _repository.Delete(t => t.F_Id == keyValue);
+                _roleAuthorizeRepository.Delete(t => t.F_ObjectId == keyValue);
+                _repository.SaveChanges();
+                scope.Complete();
+            }
         }
 
         public void SubmitForm(RoleDto roleInputDto, string[] permissionIds, string keyValue)
@@ -63,8 +65,8 @@ namespace BH.Application.SystemManage
             {
                 model.F_Id = Common.GuId();
             }
-            var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).ToList();
-            var buttondata = _moduleButtonRepository.IQueryable().OrderBy(t => t.F_SortCode).ToList();
+            var moduledata = _moduleRepository.IQueryable().OrderBy(o => o.F_SortCode).Select(f => f.F_Id).ToList();
+            var buttondata = _moduleButtonRepository.IQueryable().OrderBy(t => t.F_SortCode).Select(f => f.F_Id).ToList();
             List<Sys_RoleAuthorize> Sys_RoleAuthorizes = new List<Sys_RoleAuthorize>();
             foreach (var itemId in permissionIds)
             {
@@ -73,11 +75,11 @@ namespace BH.Application.SystemManage
                 Sys_RoleAuthorize.F_ObjectType = 1;
                 Sys_RoleAuthorize.F_ObjectId = model.F_Id;
                 Sys_RoleAuthorize.F_ItemId = itemId;
-                if (moduledata.Find(t => t.F_Id == itemId) != null)
+                if (moduledata.Contains(itemId))
                 {
                     Sys_RoleAuthorize.F_ItemType = 1;
                 }
-                if (buttondata.Find(t => t.F_Id == itemId) != null)
+                else if (buttondata.Contains(itemId))
                 {
                     Sys_RoleAuthorize.F_ItemType = 2;
                 }

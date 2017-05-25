@@ -55,5 +55,13 @@ namespace BH.Domain.Entity
         [MaxLength(500)]
         [Column(TypeName = "varchar")]
         public string F_Description { get; set; }
+        /// <summary>
+        /// 用户登录信息
+        /// </summary>
+        public Sys_UserLogOn Sys_UserLogOn { get; set; }
+        
+
+
+
     }
 }

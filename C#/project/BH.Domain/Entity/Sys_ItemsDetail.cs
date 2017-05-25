@@ -8,7 +8,7 @@ namespace BH.Domain.Entity
     public class Sys_ItemsDetail : FullAudited
     {
         [MaxLength(50)]
-        [Column(TypeName = "varchar")]
+        [ForeignKey("Sys_Items"),Column(TypeName = "varchar")]
         public string F_ItemId { get; set; }
         [MaxLength(50)]
         [Column(TypeName = "varchar")]
@@ -29,7 +29,6 @@ namespace BH.Domain.Entity
         [MaxLength(500)]
         [Column(TypeName = "varchar")]
         public string F_Description { get; set; }
-        [ForeignKey("F_ItemId")]
         public virtual Sys_Items Sys_Items { get; set; }
     }
 }

@@ -1,10 +1,4 @@
-﻿/*******************************************************************************
- * Copyright © 2016 BH.Framework 版权所有
- * Author: BH
- * Description: BH快速开发平台
- * Website：http://www.BH.cn
-*********************************************************************************/
-using BH.Code;
+﻿using BH.Code;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -21,9 +15,10 @@ namespace BH.Data
     /// <typeparam name="TEntity">实体类型</typeparam>
     public interface IDbContextRepository<TDbContext, TEntity> where TEntity : class, new() where TDbContext : DbContext, new()
     {
-        void LazySaveChanges();
-        int SaveChanges(bool islazy = false);
-        Task<int> SaveChangesAsync(bool islazy = false);
+        TDbContext GetDbContext();
+        DbSet<TEntity> GetTable();
+        int SaveChanges();
+        Task<int> SaveChangesAsync();
         TEntity Insert(TEntity entity);
         Task<TEntity> InsertAsync(TEntity entity);
         int Insert(List<TEntity> entitys);

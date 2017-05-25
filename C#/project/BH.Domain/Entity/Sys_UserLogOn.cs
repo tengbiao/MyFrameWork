@@ -6,7 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BH.Domain.Entity
 {
     public class Sys_UserLogOn : EntityBase
-    {
+    {      
+        [Key,ForeignKey("Sys_User")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar")]
+        public new string F_Id { set; get; }
         [MaxLength(50)]
         [Column(TypeName = "varchar")]
         public string F_UserId { get; set; }
@@ -40,5 +44,7 @@ namespace BH.Domain.Entity
         [MaxLength(50)]
         [Column(TypeName = "varchar")]
         public string F_Theme { get; set; }
+       
+        public Sys_User Sys_User { get; set; }
     }
 }

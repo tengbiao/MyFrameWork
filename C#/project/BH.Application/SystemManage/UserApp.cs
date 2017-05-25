@@ -4,8 +4,10 @@ using BH.Data;
 using BH.Domain.Entity;
 using BH.IApplication;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BH.Application.SystemManage
 {
@@ -37,11 +39,13 @@ namespace BH.Application.SystemManage
         }
         public async Task<int> DeleteForm(string keyValue)
         {
-            _repository.LazySaveChanges();
-            _userLogOnRepository.LazySaveChanges();
-            await _repository.DeleteAsync(t => t.F_Id == keyValue);
-            await _userLogOnRepository.DeleteAsync(t => t.F_UserId == keyValue);
-            return await _repository.SaveChangesAsync(true);
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await _repository.DeleteAsync(d => d.F_Id == keyValue);
+                await _userLogOnRepository.DeleteAsync(d => d.F_Id == keyValue);
+                scope.Complete();
+                return 1;
+            }
         }
         public async Task<int> SubmitForm(UserDto userInputDto, UserLogOnDto userLogOnInputDto, string keyValue)
         {
@@ -56,8 +60,6 @@ namespace BH.Application.SystemManage
                 userModel.Create();
             }
 
-            _repository.LazySaveChanges();
-            _userLogOnRepository.LazySaveChanges();
             if (!string.IsNullOrEmpty(keyValue))
             {
                 await _repository.UpdateAsync(userModel);
@@ -69,11 +71,11 @@ namespace BH.Application.SystemManage
                 userLogOnModel.F_UserSecretkey = Encryptor.Md5Encryptor16(Common.CreateNo()).ToLower();
                 //密码逻辑，  密码明文md5加密 => 根据生成的令牌Des加密md5加密过的密码 => 再次md5加密
                 userLogOnModel.F_UserPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(
-                    Encryptor.Md5Encryptor32(userLogOnModel.F_UserPassword).ToLower(),userLogOnModel.F_UserSecretkey).ToLower()).ToLower();
+                    Encryptor.Md5Encryptor32(userLogOnModel.F_UserPassword).ToLower(), userLogOnModel.F_UserSecretkey).ToLower()).ToLower();
                 await _repository.InsertAsync(userModel);
                 await _userLogOnRepository.InsertAsync(userLogOnModel);
             }
-            return await _repository.SaveChangesAsync(true);
+            return await _repository.SaveChangesAsync();
         }
         public async Task<int> UpdateForm(UserDto userInputDto)
         {
@@ -88,12 +90,12 @@ namespace BH.Application.SystemManage
             {
                 if (Sys_User.F_EnabledMark == true)
                 {
-                    Sys_UserLogOn Sys_UserLogOn = await _userLogOnRepository.FindKeyAsync(Sys_User.F_Id);
+                    Sys_UserLogOn Sys_UserLogOn = _userLogOnRepository.FindKey(Sys_User.F_Id);
                     string dbPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(password, Sys_UserLogOn.F_UserSecretkey).ToLower()).ToLower();
                     if (dbPassword == Sys_UserLogOn.F_UserPassword)
                     {
                         DateTime lastVisitTime = DateTime.Now;
-                        int LogOnCount = (Sys_UserLogOn.F_LogOnCount).ToInt() + 1;
+                        int LogOnCount = Sys_UserLogOn.F_LogOnCount.ToInt() + 1;
                         if (Sys_UserLogOn.F_LastVisitTime != null)
                         {
                             Sys_UserLogOn.F_PreviousVisitTime = Sys_UserLogOn.F_LastVisitTime.ToDate();

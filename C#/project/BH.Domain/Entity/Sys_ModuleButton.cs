@@ -7,8 +7,7 @@ namespace BH.Domain.Entity
 {
     public class Sys_ModuleButton : FullAudited
     {
-        [MaxLength(50)]
-        [Column(TypeName = "varchar")]
+        [ForeignKey("Sys_Module"),MaxLength(50),Column(TypeName = "varchar")]
         public string F_ModuleId { get; set; }
         [MaxLength(50)]
         [Column(TypeName = "varchar")]
@@ -39,7 +38,6 @@ namespace BH.Domain.Entity
         [MaxLength(500)]
         [Column(TypeName = "varchar")]
         public string F_Description { get; set; }
-        [ForeignKey("F_ModuleId")]
         public virtual Sys_Module Sys_Module { get; set; }
     }
 }

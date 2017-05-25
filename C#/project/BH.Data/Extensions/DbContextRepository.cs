@@ -21,11 +21,6 @@ namespace BH.Data
         where TDbContext : DbContext, new()
         where TEntity : class, new()
     {
-        /// <summary>
-        /// 是否延迟提交， 主要用于同时多次操作使用
-        /// </summary>
-        private bool LazySaveChange = false;
-
         protected TDbContext Context
         {
             get
@@ -47,6 +42,11 @@ namespace BH.Data
             }
         }
 
+        public TDbContext GetDbContext()
+        {
+            return Context;
+        }
+
         public DbSet<TEntity> Table
         {
             get
@@ -54,10 +54,9 @@ namespace BH.Data
                 return Context.Set<TEntity>();
             }
         }
-
-        public void LazySaveChanges()
+        public DbSet<TEntity> GetTable()
         {
-            this.LazySaveChange = true;
+            return Table;
         }
 
         /// <summary>
@@ -65,9 +64,9 @@ namespace BH.Data
         /// </summary>
         /// <param name="islazy">是否延迟提交 默认立即提交， 当传true时LazySaveChange属性必须为true</param>
         /// <returns></returns>
-        public int SaveChanges(bool islazy = false)
+        public int SaveChanges()
         {
-            return (islazy && LazySaveChange) || !islazy ? Context.SaveChanges() : 0;
+            return Context.SaveChanges();
         }
 
         /// <summary>
@@ -75,9 +74,9 @@ namespace BH.Data
         /// </summary>
         /// <param name="islazy">是否延迟提交 默认立即提交， 当传true时LazySaveChange属性必须为true</param>
         /// <returns></returns>
-        public async Task<int> SaveChangesAsync(bool islazy = false)
+        public async Task<int> SaveChangesAsync()
         {
-            return (islazy && LazySaveChange) || !islazy ? await Context.SaveChangesAsync() : 0;
+            return await Context.SaveChangesAsync();
         }
 
         public TEntity Insert(TEntity entity)
