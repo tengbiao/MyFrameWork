@@ -19,7 +19,10 @@ namespace BH.Data
 
         public BHDbContext(string sqlConntionStr) : base(sqlConntionStr)
         {
-
+            this.Configuration.AutoDetectChangesEnabled = false;
+            this.Configuration.ValidateOnSaveEnabled = false;
+            this.Configuration.LazyLoadingEnabled = true;
+            this.Configuration.ProxyCreationEnabled = false;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
