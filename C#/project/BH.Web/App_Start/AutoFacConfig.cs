@@ -4,6 +4,8 @@ using System;
 using System.Web.Mvc;
 using System.Linq;
 using BH.Data;
+using System.Web.Compilation;
+using System.Reflection;
 
 namespace BH.Web.App_Start
 {
@@ -25,10 +27,14 @@ namespace BH.Web.App_Start
             ContainerBuilder builder = new ContainerBuilder();
             //注册仓储基类
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
+
+            var assemblys = BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToList();
+
             //注册控制器
-            builder.RegisterControllers(typeof(AutoFacConfig).Assembly);
+            builder.RegisterControllers(assemblys.ToArray());
+
             //注册所有的 AppService 和 Repository
-            foreach (var item in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var item in assemblys)
             {
                 string name = item.GetName().Name;
                 if (new string[] { "BH.Application", "BH.Repository" }.Count(a => a == name) > 0)
@@ -52,6 +58,5 @@ namespace BH.Web.App_Start
             //此处使用的是将AutoFac工作容器交给MVC底层 (需要using System.Web.Mvc;)  
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
-
     }
 }
