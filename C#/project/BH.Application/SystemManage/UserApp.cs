@@ -90,7 +90,7 @@ namespace BH.Application.SystemManage
             {
                 if (Sys_User.F_EnabledMark == true)
                 {
-                    Sys_UserLogOn Sys_UserLogOn = _userLogOnRepository.FindKey(Sys_User.F_Id);
+                    Sys_UserLogOn Sys_UserLogOn = await _userLogOnRepository.FindKeyAsync(Sys_User.F_Id);
                     string dbPassword = Encryptor.Md5Encryptor32(Encryptor.DesEncrypt(password, Sys_UserLogOn.F_UserSecretkey).ToLower()).ToLower();
                     if (dbPassword == Sys_UserLogOn.F_UserPassword)
                     {

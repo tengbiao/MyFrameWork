@@ -22,3 +22,14 @@
 /C#/project/BH.Code/obj/Debug
 /C#/project/BH.Code/bin/Debug
 /C#/project/BH.Mapping/bin/Debug
+/C#/project/BH.Application/bin/Release
+/C#/project/BH.Application/obj/Release
+/C#/project/BH.Code/bin/Release
+/C#/project/BH.Code/obj/Release
+/C#/project/BH.Data/bin/Release
+/C#/project/BH.Data/obj/Release
+/C#/project/BH.Domain/bin/Release
+/C#/project/BH.Domain/obj/Release
+/C#/project/BH.Repository/bin/Release
+/C#/project/BH.Repository/obj/Release
+/C#/project/BH.Web/obj/Release

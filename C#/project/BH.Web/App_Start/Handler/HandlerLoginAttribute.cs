@@ -1,5 +1,6 @@
 ﻿using BH.Code;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace BH.Web
 {
@@ -12,7 +13,7 @@ namespace BH.Web
         }
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            if (Ignore == false)
+            if (Ignore == false || filterContext.ActionDescriptor.GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Any())
             {
                 return;
             }
