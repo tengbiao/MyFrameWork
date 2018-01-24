@@ -86,6 +86,25 @@ namespace BH.Code
         }
 
         /// <summary>
+        /// 获取域名
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDomain()
+        {
+            string host = string.Empty;
+            string scheme = HttpContext.Current.Request.Url.Scheme;
+            if (!string.IsNullOrEmpty(HttpContext.Current.Request.Headers["Host"]))
+                host = HttpContext.Current.Request.Headers["Host"];
+            else if (!string.IsNullOrEmpty(HttpContext.Current.Request.Headers["X-Host"]))
+                host = HttpContext.Current.Request.Headers["X-Host"];
+            else
+                host = HttpContext.Current.Request.ServerVariables["HTTP_HOST"];
+            if (host.EndsWith(":80") || host.EndsWith(":443"))
+                host = host.Replace(":80", "").Replace(":443", "");
+            return string.Concat(scheme, "://", host);
+        }
+
+        /// <summary>
         /// 获取Web客户端主机名
         /// </summary>
         private static string GetWebClientHostName()
